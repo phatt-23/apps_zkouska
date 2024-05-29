@@ -187,8 +187,26 @@
   - uvnitř el. zařízení - I2C (Inter Integrated Circuit)
 
 == Čítače a časovače
-- čítač - registr, čítá vnější události (je inkrementován vnějším signálu)
-- časovač - je inkrementován internímy hodinamy
+- čítač - registr o $N$ bitech
+  - čítá vnější události (je inkrementován vnějším signálu dle jeho náběžné nebo sestupné hrany)
+  - při jeho přetečení se předá _Interrupt Request_ do _Interrupt Subsystem_ mikropočítače
+  - jeho počíteční hodnota se nastaví programově
+  - je možné ho v libovolné chvíli odpojit a připojit k externímu signálu
+- časovač - čítač, který je inkrementován interním hodinovým signálem
+  - lze jim zajistit řízení událostí a chování v reálném čase
+  - při přeteční se automaticky předa _Interrupt Request_ 
+  - krom počáteční hodnoty, lze nastavit i předdeličku
+
+#figure(
+    grid(
+        columns: (auto, auto),
+        rows:    (auto, auto),
+        gutter: 1em,
+        [ #image("monolity/image11.png", width: 100%) ],
+        [ #image("monolity/image12.png", width: 100%) ],
+    ),
+    caption: "Schéma čítače s přepínačem a časovače s předděličkou"
+)
 
 == A/D převodníky
 - fyzikal. veličiny vstupují do MCU v analog. formě (spojité)
@@ -199,7 +217,7 @@
   - A/D převodník s pomocí D/A převodem
   - integrační A/D převodník
   - převodník s RC článkem
-
+#pagebreak()
 == D/A převodníky
 - převede z digital. formy do analog. formy
 - typy:
@@ -215,8 +233,6 @@
 - TV přijímač
 - IR vysílač a přijímač
 - řadiče LCD nebo LED
-
-#pagebreak()
 
 = 3. Vysvětlete PWM a kde se používá. Obrázek dobrovolný.
 - realizován buď programovou implementací nebo dedikovaným obvodem
@@ -1248,9 +1264,10 @@
   - nijak se nekotroluje jestli je periférie připravená (očekává se, že je vždy připravená)
 - #underline[výstup] _(output)_ - procesor vyšle signál _WR_ (write) 
   - výstupní zařízení data z procesoru převezme
-  - nijak se nekontroluje, jetli data opravdu převzala
+  - nijak se nekontroluje, jedtli data perfiferní zařízení opravdu převzalo
 - tento způsob je velmi jednoduchý
-- předpokládá neustýlou připravenost periferního zařízení
+- předpokládá neustálou připravenost periferního zařízení
+
 #pagebreak()
 ==  Technika podmíněného vstupu a výstupu _(se semaforem/indikátorem)_
 #figure(
@@ -1266,21 +1283,21 @@
   - pokud je $Q = 1$ jsou data připravena pro předání do procesoru
   - data se přečtou procesorem vysláním signálu _RD (read)_ z procesoru - ten zároveň nastaví $Q = 0$
 - #underline[výstup] _(output)_
-  - procesor vyšle signál _WR (write)_ pro zápis dat do výstupního zařízení - zárověň nastaví $Q=1$
-  - periferní zařízení data z procesoru převezme a vyšle signál _ACK_
+  - procesor vyšle signál _WR (write)_ pro zápis dat do výstupního zařízení a data pošle - zárověň nastaví $Q=1$
+  - periferní zařízení data z procesoru převezme a vyšle signál _ACK_ - data převzata
     - nastaví $Q = 0$
       - dá tím procesoru najevo, že data skutečně převzalo, 
       - procesor může vyslat další data
    
-- obrázky popisují #emph[jednosměrný korespondenční režim] - není zde _buffer_ uprostřed komunikace
-  - vysílač dat (ať už procesor nebo periférie) je povinen si data udržovat při celém průběhu komunikaci
+- obrázky popisují #emph[jednosměrný korespondenční režim] (neúplný) - není zde _buffer_ uprostřed komunikace
+  - vysílač dat (ať už procesor nebo periférie) je povinen si data udržovat při celém průběhu komunikace
     - nemá _buffer_ (na obrázku jako registr), kam by je průběžně mohl zapisovat
 
 = 26. Přenos dat použitím V/V brány s bufferem. Nakreslit obrázek komunikace jedním směrem a jak se liší komunikace druhým směrem. V jakých periferiích se používá.
 
 - funguje na principu _input/output_ v technice bez _bufferu_ (minulá otázka) ale tentokrát ten _buffer_ má
 - využíva _buffer_ (na obrázku registr) jako vyrovnávací paměť a klopný obvod _(flip-flop)_ jako semafor/indikátor
-- jde o #emph[obousměrný korespondenční režim] komunikace
+- jde o #emph[obousměrný korespondenční režim] (úplný) komunikace
   - možnost vzájemného blokování _(interlock)_
   - vysílač dat a přijímač dat testují stav indikátoru $Q$
 - #underline[vstup] _(input)_
@@ -1306,31 +1323,32 @@
     - přímý přesun dat mezi hlavní pamětí a periférii s minimální účasti procesoru
       - bez _DMA_ bloku musí každý byte dat z periférie projít procesorem a až potom procesor může přistoupit do paměti
       - procesor se samotného přesunu dat neučastní - pouze nastaví/naprogramuje _DMA blok_ 
-      - sběrnice musí být při přesunu uvolněna - může byt maximálně jeden _budič_ sběrnice
+      - sběrnice musí být při přesunu uvolněna - může být maximálně jeden _budič_ sběrnice
         - procesor přepne všechny budiče sběrnic do stavu vysoké impedance
       - _DMA_ zajistí přesun - generuje sám adresy v paměti, kam se bude zapisovat/číst
       
-- v tomto bloku jsou tři registry pro styk se sběrnicí
+- v _DMA_ bloku jsou tři registry sloužící pro styk se sběrnicí:
   - _data register_ - obsahuje slovo, které má být přesunuto z periferie do paměti nebo naopak
   - _address register_ - pro uchování adresy v hlavní paměti, na kterou bude slovo zapsáno nebo čteno
   - _counter_ - počet slov, které mají být ještě přesunuty
 - operace přístupu do paměti:
-  1. procesor naprograuje blok DMA - nastaví se registry (counter, address)
-  + blok DMA spustí periferní zařízení a čeká až bude připraveno
-  + periferie oznámí DMA bloku, že je připravena - DMA blok vyšle _DMA request_
-  + procesor dokončí strojovou instrukci a začne se věnovat _DMA requestu_
+  1. procesor naprograuje blok _DMA_ - nastaví se registry _counter_ a _address_
+  + blok _DMA_ spustí periferní zařízení a čeká až bude připraveno
+  + periferie oznámí _DMA_ bloku, že je připravena - _DMA_ blok vyšle _DMA Request_
+  + procesor dokončí strojovou instrukci a začne se věnovat _DMA Requestu_
   + přímý přístup do paměti se vykonává synchronně s normální činnosti procesoru
-    - přpíná se přístup sběrnice a paměti mezi DMA blokem a procesorem
-    - DMA blok pracuje s pamětí ve fázi $Phi_1$ a procesor ve fázi $Phi_2$
+    - synchronně se přepíná přístup ke sběrnici a paměti mezi _DMA_ blokem a procesorem
+    - např. _DMA_ blok pracuje s pamětí ve fázi $Phi_1$ a procesor ve fázi $Phi_2$ interního clocku 
   + DMA blok vyšle na adresovou sběrnici obsah svého _address registru_ a na datovou sběrnici obsah svého _data registru_
-  + počka jeden paměťový cyklus $arrow$ inkrementuje _address register_, dekrementuje _counter_ (počet dlov, které mají být ještě přesunuté)
+  + počka jeden paměťový cyklus $arrow$ inkrementuje _address register_, dekrementuje _counter_ (počet slov, které mají být ještě přesunuty)
   + testuje zda _counter_ $= 0$
-    - pokud ano - ukončí DMA komunikaci a předá kontrolu nad sběrnici procesoru 
+    - pokud ano - ukončí DMA komunikaci a vrátí kontrolu nad sběrnici procesoru 
     - pokud ne - proces se opakuje od 6. kroku
+  - čtení funguje obdobně, jen opačným směrem
   
-#figure(image("komunikace/image6.png", width: 60%), caption: [Přenos dat bez DMA bloku vyžadující zásah procesor])
+#figure(image("komunikace/image6.png", width: 60%), caption: [Přenos dat bez DMA bloku _(ve von Neumann)_ vyžadující neustálý zásah procesoru])
 
-#figure(image("komunikace/image7.png", width: 90%), caption: [Přenos dat s DMA blokem ve von Neumann nevyžaduje zásah procesoru])
+#figure(image("komunikace/image7.png", width: 90%), caption: [Přenos dat s DMA blokem _(ve von Neumann)_ nevyžaduje zásah procesoru (minimální)])
   
 //////////////////////////////////////////////////////////////////////////////////////////*
 //////////////////////////////////////////////////////////////////////////////////////////*
@@ -1347,17 +1365,26 @@
 + Jak řešíme v Assembly x86 podmínky - co jím musí předcházet. Jaký je vztah mezi tím, co je předchází, a tou podminkou. Kde a proč záleží na datových typech.
 
 = 28. Jak adresujeme na úrovni strojového kódu - příklad. 
-- adresování dělíme na přímé a nepřímé
+- adresování dělíme na _přímé_ a _nepřímé_
 - přímé adresování:
-  - uvádíme konkrétní adresu
-  - adresy globálních proměnných
-  - není běžné aby programátor adresoval přímo
-- nepřímé adresování
+  - uvádíme konkrétní adresu v paměti 
+  ```c 
+  int a = 12;                       // in C language
+  int* a_ptr = &a;
+  printf("%p\n", a_ptr);
+  $> 0x7ffc58e5f904
+  ```
+  ```asm
+  mov rax, qword [0x7ffc58e5f904]   ; in assembly language
+  ```
+  - např. adresy globálních proměnných
+  - není běžné aby programátor adresoval data v paměti přímo
+- nepřímé adresování:
   - adresujeme přes registry
   - v 64-bit systémech s x86 instrukční sadou adresujeme pomocí:
     - registrů (bázová adresa a index v poli),
-    - měřítka (počet bytů - `char = 1`, `short = 2`, `int = 4`, `long = 8`),
-    - konstanty
+    - měřítka (počet bytů - `char = 1`, `short = 2`, `int = 4`, `long = 8`, a více),
+    - konstanty - většinou není potřebná
     ```asm
     [bázový_registr + index_registr * měřítko + konstanta] 
     mov eax, dword [rdx + rcx * 4 + 0]
@@ -1367,45 +1394,52 @@
     - `rcx` registr představuje indexový registr
     - číslo `4` je měřítkem - např. adresujeme pole ```c int array[N] = {0}```, protože ```c sizeof(int) = 4```
 
+#pagebreak()
+
 = 29. Podmíněné a nepodmíněné skoky v strojovém kódu.
 - skokové instrukce:
   ```asm
-  jmp <target>       ; nepodmíněný skok na <target>
-  call <target>      ; zavolání podprogramu, skočí se <target>
-  ret                ; skočí se zpět do nadprogramu (jeho adresa je na stacku)
-  loop <target>      ; if(--ecx) goto <target>
-  loope <target>     ; if(--ecx && zf) goto <target>
-  loopz <target>     ; stejné jako loope
-  loopne <target>    ; if(--ecx && !zf) goto <target>
-  loopnz <target>    ; stejné jako loopne
-  jcxz <target>      ; if(!rcx) goto <target>
+  ; tyto jsou nepodmíněné
+  jmp <target>              ; nepodmíněný skok na <target>
+  call <target>             ; zavolání podprogramu, skočí se <target>
+  ret                       ; skočí se zpět do nadprogramu (jeho adresa je na stacku)
+  ; další jsou už podmíněné
+  loop <target>             ; if(--ecx) goto <target>
+  loope <target>            ; if(--ecx && zf) goto <target>
+  loopz <target>            ; stejné jako loope
+  loopne <target>           ; if(--ecx && !zf) goto <target>
+  loopnz <target>           ; stejné jako loopne
+  jcxz <target>             ; if(!rcx) goto <target>
   ; tyto testují přímo jednotlivé bity ve stavovém registru procesoru
-  jz / je <target>            ; if equal = 1
-  jnz / jne <target>          ; if equal = 0
-  js <target>                 ; if sign = 1
-  jns <target>                ; if sign = 0
-  jc <target>                 ; if carry = 1
-  jnc <target>                ; if carry = 0
-  jo <target>                 ; if overflow = 1
-  jno <target>                ; if overflow = 0
+  jz / je <target>          ; if equal = 1
+  jnz / jne <target>        ; if equal = 0
+  js <target>               ; if sign = 1
+  jns <target>              ; if sign = 0
+  jc <target>               ; if carry = 1
+  jnc <target>              ; if carry = 0
+  jo <target>               ; if overflow = 1
+  jno <target>              ; if overflow = 0
   ; tyto řeší porovnavání čísel
-  ja / jnbe <target>          ; if below = 0 && equal = 0
-  jb / jnae / jc <target>     ; if below = 1 && equal = 0
-  jae / jnb / jnc <target>    ; if below = 0 && equal = 1 
-  jbe / jna <target>          ; if below = 1 && equal = 1
-  jg / jnle <target>          ; if less = 0 && equal = 0
-  jl / jnge <target>          ; if less = 1 && equal = 0
-  jge / jnl <target>          ; if less = 0 && equal = 1
-  jle / jng <target>          ; if less = 1 && equal = 1
+  ja / jnbe <target>        ; if below = 0 && equal = 0
+  jb / jnae / jc <target>   ; if below = 1 && equal = 0
+  jae / jnb / jnc <target>  ; if below = 0 && equal = 1 
+  jbe / jna <target>        ; if below = 1 && equal = 1
+  jg / jnle <target>        ; if less = 0 && equal = 0
+  jl / jnge <target>        ; if less = 1 && equal = 0
+  jge / jnl <target>        ; if less = 0 && equal = 1
+  jle / jng <target>        ; if less = 1 && equal = 1
   ```
-- skoky nepodmíněné ```asm jmp <target>``` se vykonají vždy - skočí na cílovou _(target)_ adresu
+- skoky nepodmíněné, ```asm jmp, call, ret```, se vykonají vždy - skočí na cílovou _(target)_ adresu
 - skoky podmíněné se vykonají pouze, tehdy když jsou nastaveny správné flagy
-  - podmíněným skokovým instrukcím vždy předchází operace, které _setnou_ flagy
+  - podmíněným skokovým instrukcím vždy předchází operace, které _setnou_ nebo _clearnou_ flagy
     - jakékoli aritmetické nebo logické operace ```asm sub, add, mul, and, or, xor ...```
-    - nejjednodušeji instrukcí ```asm cmp <cokoli> <cokoli>``` 
+    - nejjednodušeji instrukcí ```asm cmp <cokoli>, <cokoli>``` 
       - stejná jako instrukce ```asm sub```, ale neuloží výsledek 
       - pouze nastaví příznakové bity v registru ```asm flags```
     - instrukce ```asm test``` je stejná jako instrukce ```asm and```, ale neuloží výsledek
+- viz další otázka pro podrobnější vysvětlení podmínek v Assembly
+
+#pagebreak()
 
 = 30. Jak řešíme v Assembly x86 podmínky - co jím musí předcházet. Jaký je vztah mezi tím, co je předchází, a tou podmínkou. Kde a proč záleží na datových typech.
 - viz předchozí otázka - řeší se tam skokové instrukce a komparační instrukce ```asm cmp, test```
@@ -1413,17 +1447,17 @@
   - příznakové bity v 8-bit ```asm flags``` registru:
     - ZF _(zero flag)_ - nastaví se pokud výsledek operace je nula
     - SF _(sign flag)_ - nastaví se pokud výsledek operace je záporné číslo
-    - OF _(overflow flag)_ - nastaví pokud dojde ke zanmékovému přetečení _(signed overflow)_
-    - CF _(carry flag)_ - nastaví se pokud dojde k neznámekovému přetečení
-    - PF _(parity flag)_ - nastaví se pokud výsledek má sudý počet jedniček (např. `01101001`)
+    - OF _(overflow flag)_ - nastaví pokud dojde ke znamékovému přetečení _(signed overflow)_
+    - CF _(carry flag)_ - nastaví se pokud dojde k neznámekovému přetečení _(unsigned overflow)_
+    - PF _(parity flag)_ - nastaví se pokud výsledek má sudý počet jedniček (např. `0110 1001`)
     - AF _(auxiliary carry flag)_ - nastaví se pokud dojde ke `carry out` ve spodním `nibble`
     - DF _(direction flag)_ - kontroluje směr `string` operací
     - IF _(interrupt flag)_ - kontroluje povolení a zakázání přerušení
     
   - instrukce, které nastaví příznakové bity:
-    - logické operace - ```asm and <d> <s>, or <d> <s>, xor <d> <s>, not <r>```
-    - aritmetické operace - ```asm add <d> <s>, sub <d> <s>, inc <r>, dec <r>, mul <r>, div <r>```
-    - komparační a testovací operace - ```asm cmp <d> <s>, test <d> <s>```
+    - logické operace - ```asm and <d>, <s>|or <d>, <s>|xor <d>, <s>|not <r>```
+    - aritmetické operace - ```asm add <d>, <s>|sub <d>, <s>|inc <r>|dec <r>|mul <r>|div <r>```
+    - komparační a testovací operace - ```asm cmp <d>, <s>|test <d>, <s>```
     - rídící operace - ```asm clc ; clear carry```, ```asm stc ; set carry``` - obdobně pro všechny příznak. bity
     - řetězcové operace - ```asm movs, cmps, lods, stos```
   - skokové instrukce: (viz minulá otázka bruv)
@@ -1431,8 +1465,10 @@
   - Assembly neřeší co nějaká sekvence bitů v paměti znaměná/reprezentuje - ```c int, float, long, struct {int, float}, char```
   - je mu to jedno - jsou to jenom bity v paměti bez žádného významu
   - programátor jím dává význam - sami o sobě jen jsou jen "jedničky" a "nuly"
-- syntakticky Assembly hledí na datové typy u instrukcí s ```asm <d> <s>``` - myšleno jako `destination` a `source` parametry - jsou jimi např.:
-  - přeusuny - ```asm mov dest src    ; velikost dest a src musí být stejná```
+- syntakticky hledí Assembly na datové typy zadané programátorem u instrukcí s $d$ a $s$ parametry: 
+  ```asm INTRUCTION_NAME <d>, <s> ``` 
+  - myšleno jako `destination` a `source` parametry - jsou jimi např.:
+  - přesuny - ```asm mov dest src    ; velikost dest a src musí být stejná```
   - násobení a dělení - ```asm div reg    ; registry musí být stejné velikosti (rax / rcx)```
   - komparace - ```asm cmp dest src   ; musí být stejné velikosti```
 - datové typy specifikují pouze velikost vyhrazené paměti
@@ -1469,17 +1505,17 @@
 
 == Grafické karty (Nvidia)
 - CUDA je málé rozšíření jazyka C/C++ (také Python, Fortran)
-  - programové rozhranní umožňujicí využití _GPU_ vypočetní síly
+  - programové rozhraní umožňujicí využití _GPU_ vypočetní síly
 - umožňuje využití výpočetní síly grafické karty:
   - masivní paralelismus - stovky tisíc vláken vykonávají stejný kód 
-  - včechny vlákna musí být nezívislé na sobě
+  - všechna vlákna musí být na sobě nezívislé 
     - _GPU_ nezaručuje synchronní pořadí vykonání instrukcí
-  - grafikcé karty jsou navrženy tak, aby maximalizovali výpočetní výkon
-    - nejlépe by se mělo cyklům a  podméněným skokům vyhnout
-  - nepodporuje _"out-of-order"_ vykonávání instrukcí jako _CPU_ od Intelu
-  - je optimalizováno pro sekvenční přístup do globální (hlavní) paměti grafické karty
+  - grafické karty jsou navrženy tak, aby maximalizovali výpočetní výkon
+    - nejlépe by se mělo cyklům a podmíněným skokům zcela vyhnout 
+  - nepodporuje _"out-of-order"_ vykonávání instrukcí jako _CPU_-čka od Intelu
+  - je optimalizováno pro sekvenční přístup do globální (hlavní / _"Device"_) paměti grafické karty
     - přenosová rychlost až stovky GB/sekunda
-  - většina tranzistorů na kartě je výpočetních (je zde minimum kontrolních a pomocných obvodů)
+  - většina tranzistorů na kartě je výpočetních (je zde minimum řídicích a pomocných obvodů)
 
 
 #figure(
@@ -1488,80 +1524,86 @@
 )
   - na obrázku: 
     - grafikcé karty jsou rozdělené do _multiprocesorů_
+      - je to "pole" procesorů, které pracují spolu - vykonávají stejné instrukce na jiných datech _(SIMD)_
+      - každá z _multiprocesorů_ může vykonávat jiný kód _(MIMD)_
     - každá grafická karta obsahuje různý počet _multiprocesorů_ 
     - _Device Memory_ je paměť sdílená všemi _multiprocesory_
       - skládá se z _Global Memory_, _Texture Memory_ a _Constant Memory_
-    - každý multiprocesor obsahuje _Shared Memory_, jednotlivé procesory a vyrovnávací paměti
+    - každý multiprocesor obsahuje svůj _Shared Memory_, jednotlivé procesory a vyrovnávací paměti
       - _Shared Memory_ je sdílená paměť mezi procesory v jednom multiprocesoru
       - každý procesor má navíc své vlastní registry
       - každy multiprocesor má  vyrovnávací paměti _(Cache Memory)_ pro rychlejší přístup k datům v globální _Device_ paměti 
         - _Constant Cache_ je pro rychlý přístup k datům v _Constant Memory_
-        - _Texture Memory_ je pro rychlý přístup k datům v _Device Memory_
+        - _Texture Cache_ je pro rychlý přístup k datům v _Texture Memory_
       
 
 #figure(
-    grid(columns:(auto,auto),rows:(auto,auto),gutter:1em,[ #image("cuda/image2.png", width: 110%) ],[ #image("cuda/image3.png", width: 100%) ],),caption: "Fermi architektura schéma v GPU a zjednodušené schéma"
+    grid(columns:(auto,auto),rows:(auto,auto),gutter:1em,[ #image("cuda/image2.png", width: 110%) ],[ #image("cuda/image3.png", width: 100%) ],),caption: "Fermi architektura schéma v GPU a jeho zjednodušené schéma"
 )
 
 #figure(
-  image("cuda/image4.png", width: 50%),
-  caption: [Organizace paměti - grafická karta v počítači]
+  image("cuda/image4.png", width: 80%),
+  caption: [Organizace paměti - grafická karta _("Device")_ v počítači]
 )
 
-- _"Device"_ je grafické karta
-  - skládá se z _DRAM_ paměti (_Globální pamět grafikcé karty_) a _GPU_ multiprocesorů
-- _"Host"_ je jakýkoli pořítač s nainstalovanou grafickou kartou
+- _"Device"_ je grafické karta, která skládá z:
+  - _DRAM_ paměti _(Globální paměť grafikcé karty_ neboli _"Device Memory")_ 
+  - _GPU_ multiprocesorů
+- _"Host"_ je jakýkoli počítač s nainstalovanou grafickou kartou
 - paměti mezi _"Host"_ a _"Device"_ jsou propojeny pouze sběrnicí - nejsou sdíléné
 
 #pagebreak()
 
-= 31. Princip programování CUDA - jak, kde, kdy se přesouvají data při výpočtu.
 
 #figure(
-  image("cuda/image5.png", width: 50%),
-  caption: [Unifikované paměť u modreních GPU architektur]
+  image("cuda/image5.png", width: 60%),
+  caption: [Unifikované paměť u moderních GPU architektur]
 )
 
 - některé počítače mají společnou sdílenou paměť mezi _CPU_ a _GPU_
 
+= 31. Princip programování CUDA - jak, kde, kdy se přesouvají data při výpočtu.
+
 #figure(
-  image("cuda/image6.png", width: 50%),
+  image("cuda/image6.png", width: 65%),
   caption: [Výpočetní proces na grafické kartě]
 )
 
-- výpočetní proces se skláda z několika kroků:
+- výpočetní proces s _CUDA_ se skláda z několika kroků:
   1. data se z hlavní operační paměti počítače ("Host Memory") přesunou do paměti grafické karty ("Device Memory")
-    - nakopírují se data z _"ramky"_ do globální paměti grafikcé karty
-    - data jsou přenášena přes sběrnici počítače - dnes obvykle přes _PCIe_ (_Peripheral Component Interconnent Express_ - standard vysokorychlostní seriové sběrnice)
-  2. procesor _CPU_ dá pokyn ke zpracování - naorganizuje vlákna, poskytne instrukce (kód)
-  3. vlákna (procesory) v _GPU_ multiproceserech vykonají instrukce
+    - nakopírují se data z _"ramky"_ do globální paměti grafické karty
+    - data jsou přenášena přes sběrnici počítače - dnes obvykle přes _PCIe_ (_Peripheral Component Interconnent Express_ - standard pro vysokorychlostní seriové sběrnice)
+  2. procesor _CPU_ dá pokyn ke zpracování 
+    - naorganizuje vlákna (konfiguruje mřížku) a poskytne kód (instrukce), který se spustí
+  3. vlákna (procesory) v _GPU_ multiproceserech vykonají poskytnutý kód (instrukce)
     - paralelně se spustí všechny nakonfigurovaná vlákna, která vykonají stejný kód (instrukce) na jiných datech - _SIMD (Single Instruction Multiple Data)_
-  4. přesunutí dat z globální paměti grafické karty ("Device Memory") zpět do hlavní paměti ("Host Memory")
+  4. přesunutí výsledných zpracovaných dat z globální paměti grafické karty ("Device Memory") zpět do hlavní paměti ("Host Memory")
 
 #pagebreak()
 
 = 32. Jaké je C/C++ rozšíření CUDA a jak to využije programátor. Jak si programátor organizuje výpočet. K čemu je mřížka. Nákres dobrovolný.
-- CUDA přínáší malé rozšíření jazyku C/C++
+- CUDA přínáší rozšíření jazyka C/C++, které umožní využít výpočetní výkon grafických karet vyráběných společností Nvidia
 - jsou jimi _kernely_, modifikátory funkcí a proměnných, datové typy a struktury, předdefinované globální proměnné, API funkce s předponou `cuda`
   - _kernel_ je funkce napsaná pro spuštění v jednotlivých jádrech grafické karty:
-    - klasicky napíšeme funkci v C++ a označíme ji modifikátorem ```c __global__``` (před nebo nad signatúrou funkce)
-    - voláme je z _CPU_-čka "(Host)" následujicí syntakcí: 
+    - klasicky napíšeme funkci v C++ a označíme ji modifikátorem ```c __global__``` (před/nad signatúru funkce)
+    - voláme je z _CPU_-čka ("Host") následujicí syntakcí: 
       
-    ```c funcName<<<gridDimensions, blockDimensions>>>(parameters...) ```
+    ```c functionName<<<gridDimensions, blockDimensions>>>(parameters...) ```
+
     - do trojtých _"chevrons"_ ```<<< >>>``` zadáváme konfiguraci mřížky a to:
-      - velikost (dimenze) mřížky - datovým typ je ```c dim3```
-      - velikost (dimenze) bloků v mřížce - datovým typ je ```c dim3```
+      - velikost (dimenze) mřížky - jejím datovým typ je ```c dim3```
+      - velikost (dimenze) bloků v mřížce - jejím datovým typ je také ```c dim3```
       - mřížka je od toho aby se _GPU_-čku při spuštění _kernelu_ nařídilo, jaký májí data _"tvar"_
         - _RGBA_ obrázek o velikosti `1200x800` nakonfigurujeme do mřížky `1200x800x4`, kde čísla jsou odpovídají počtu vláken na danou dimenzi
           - při spuštění se ještě musí hledět na to, jak tyto vlákna přerozdělíme do bloků stejných rozměrů, tak aby se vešel každý pixel obrázku do finální mřížky 
   - modifikátory funkcí - píšeme před signatúrou funkcí:
-    - ```c __host__``` - značí, že tuto funkci může spustit/zavolat pouze _CPU_ ("Host")  
-    - ```c __device__``` - značí, že tuto funkci může spustit/zavolat pouze _GPU_ ("Device") 
-    - ```c __global__``` - modifikátor pro tzv. kernely - funkce spouštějicí se na _GPU_ multiprocesorech ("Device") a jsou zavolány _CPU_-čkem ("Host")
+    - ```c __host__``` - značí, že tuto funkci může spustit/zavolat pouze _CPU_-čko ("Host")  
+    - ```c __device__``` - značí, že tuto funkci může spustit/zavolat pouze _GPU_-čko ("Device") 
+    - ```c __global__``` - modifikátor pro tzv. _kernely_ - funkce spouštějicí se na _GPU_ multiprocesorech ("Device") a jsou zavolány _CPU_-čkem ("Host")
   - modifikátory proměnných - píšeme před datovým typem proměnné:
     - ```c __device__``` - deklaruje proměnnou, která bude sídlit v "Device" paměti po celou dobu běhu programu
-    - ```c __constant__``` - stejně jak `__device__` ale není možné ji přepsat - je _"read-only"_
-    - ```c __shared__``` - proměnná sídlí v "Shared Memory" bloku - je přístupná pro $forall$ vlákna v jednom bloku 
+    - ```c __constant__``` - stejný jako `__device__` ale není možné ji přepsat - je _"read-only"_
+    - ```c __shared__``` - proměnná sídlí v "Shared Memory" jednoho bloku - je přístupná pouze pro vlákna v tomto bloku, nikým jiným 
     - `__managed__` - je přístupná jak z "Host" tak i z "Device" a je spravována tzv. "Unified Memory" systémem - CUDA spravuje přesun dat automaticky
   - datové typy a struktury:
     - všechny běžné datová typy v C/C++
@@ -1572,36 +1614,40 @@
     long,  ulong    // typedef unsigned long ulong
     float, double
     ```
-    - se používají jako struktury se stejnými jmény jako datový se číselnou příponou `1, 2, 3, 4`
-      - značí kolik je tohoto datového typu vně struktury - přistupuje se k nim pomocí přístupových operátoru a jména polí ```c .x, .y, .z, .w```
-      - ```cpp int3, uchar3, float3, uint3, ...```
+    - se používají jako struktury se stejnými jmény jako datové typy s číselnou příponou (1 až 4)
+      - značí kolik je tohoto datového typu vně struktury - přistupuje se k nim pomocí přístupových operátoru a jména polí ```c .x, .y, .z, .w``` (klasická C syntaxe)
+      - ```cpp int3, uchar3, float3, uint3, ..., dim3 = uint3```
     ```cpp
-    int3 some_variable(12, 34, 56); // struct int3 { int x, y, z; };
-    some_variable.x = 13;
+    int3 some_variable(12, 34, 56); // int3 some_variable = { .x=12, .y=34, .z=56 };
+    some_variable.x = 61;           // int3 some_variable = { .x=61, .y=34, .z=56 };
     ```
 
-    - `dim3` je datovým typem mřížky a bloku zadávané do trojtých _"chevrons"_ při volání _kernelu_ 
+    - `dim3` je datovým typem mřížky a bloku zadávané do trojtých _"chevrons"_ při volání _kernelu_
+    - `cudaError_t` je datový typ pro udržení _error code_ (návratové hodnoty CUDA API funkcí) 
+      - je důležitý při ladění kódu -- lze ho předat do `cudaGetErrorString(...)`, která vrátí zprávu o tom, kde nastala chyba 
   - předdefinované globální proměnné:
-    - slouží k zjištění přesné "adresy" nebo _ID_ každého vlákna v spuštěném _kernelu_
-    - ```c dim3 gridDim``` - udává dimenze třirozměrné mřížky
-    - ```c dim3 blockDim``` - udává jak velký je blok v mřížce, opět je třízorměrný
-    - ```c uint3 blockIdx``` - udává pozici bloku, ve kterém se vlákno zrovna nachází  
-    - ```c uint3 threadIdx``` - udává třídimenzionální pozici vlákna v bloku 
+    - slouží k zjištění přesné _ID_ (polohy, adresy) každého vlákna ve spuštěném _kernelu_
+    - ```c dim3 gridDim``` - udává dimenze třojrozměrné mřížky
+    - ```c dim3 blockDim``` - udává jak velký je blok v mřížce, opět je třojrozměrný
+    - ```c uint3 blockIdx``` - udává pozici bloku v mřížce, ve kterém se vlákno zrovna nachází  
+    - ```c uint3 threadIdx``` - udává třídimenzionální pozici vlákna v bloku, ve kterém se nachází 
     - ```c int warpSize``` - záleží na architekruře grafické karty, udává kolik je vláken na jednom "Warp"
+      - není pro výpočet důležitý - je užitečný pro optimalizaci výpočtu pro určité architektrury grafických karet
+    - různé flagy zadávané do `cuda` funkcí jako: ```c cudaMemcpyHostToDevice, cudaMemcpyDeviceToHost, cudaMemcpyDeviceToDevice, ...``` 
 
   #figure(
     caption: [Způsob adresování jednotlivých vláken ve dvou-dimenzionální mřížce],
-    image("cuda/image7.png", width: 70%)
+    image("cuda/image7.png", width: 60%)
   )  
   ```cpp
   uint3 pos = { 
       blockIdx.x * blockDim.x + threadIdx.x,
       blockIdx.y * blockDim.y + threadIdx.y,
       blockIdx.z * blockDim.z + threadIdx.z
-  }; // uint3 pos představuje přesnou pozici jednoho vlákna v celé mřížce
+  }; // uint3 pos ... představuje přesnou pozici jednoho vlákna v celé mřížce
   ```
 
-  - API funkce s předponou `cuda` (je jich stovkym, tady jen pár z nich):
+  - API funkce s předponou `cuda` (je jich stovky, tady jen pár z nich):
   ```cpp
   cudaError_t cudaDeviceReset(void);
   cudaError_t cudaDeviceSynchronize(void);
@@ -1611,25 +1657,23 @@
   cudaError_t cudaMallocManaged(void** devPtr, size_t size, unsigned int flags);
   cudaError_t cudaFree(void* devPtr);
   cudaError_t cudaMemcpy(void* dst, const void* src, size_t count, cudaMemcpyKind k);
-  // 
-  int printf(const char* format, ...);
   ```
 
 #pagebreak()
 
 = 33. Čemu by se měl programátor vyhnout a jak CUDA funguje.
 - fungování CUDA je popsáno v předchozích otázkách
-- mělo by se minimalizovat přesun dat mezi _"Host"_ a _"Device"_ paměťmi
+- měl by se minimalizovat přesun dat mezi _"Host"_ a _"Device"_ paměťmi
   - přes API funkci ```c cudaMemcpy(...)```, ideálně přesouvat data jen dvakrát - před výpočtem a po dokončení výpočtu
-- používat _GPU_ pouze pro výpočetně náročné úlohy
+- používat _GPU_ pouze pro výpočetně náročné úlohy (např. maticové operace)
   - ne všechny úlohy jsou vhodné počítat přes grafickou kartu
 - pro intensivní přesuny mezi paměťmi využít _"pipelining"_ a _"prefetching"_
-  - přes API volání funkce ```c cudaMemPrefetchAsync(...)```, asynchronně začne přesun dat za současného běhu hlavního programu
-- data by se měla zorganizovat tak, aby se k nim mohlo přistupovat sekvenčně
+  - přes API volání funkce ```c cudaMemPrefetchAsync(...)``` - asynchronně začne přesun dat za současného běhu hlavního programu
+- data by se měla zorganizovat tak, aby se k nim mohlo přistupovat sekvenčně/sériově
   - _GPU_ multiprocesory jsou optimalizováný na sekvenční přístup do svých _"Shared Memory"_
 - zredukovat co nejvíce počet _"divergentních"_ vláken
   - nejlépe, aby všechny vlákna vykonávali stejný sekvenční kód
-- optimálně nakonfigurovat velikost mřížky [Grid] a bloků [Block] v mřížce
+- optimálně nakonfigurovat velikost mřížky (Grid) a bloků (Block) v mřížce
 
 //////////////////////////////////////////////////////////////////////////////////////////*
 //////////////////////////////////////////////////////////////////////////////////////////*
@@ -1651,10 +1695,10 @@
   image("par_sys/image1.png", width: 60%)
 )
 - *SISD architektury* _(Single-Instruction Single-Data)_
-  - na jednu instrukci připadá jedny data
+  - na jednu instrukci připadají jedny data
   - jde o typické jednoprocesorové architektury
-    - mohou sice zpracovávat více instrukcí zároveň - pipelining
-    - to neznamená, že provádí kód paralelně
+    - mohou sice zpracovávat více instrukcí zároveň pomocí _"pipelining"_
+    - to však neznamená, že provádí kód paralelně
     - jen zpracovávají několik instrukcí zároveň pomocí sekvenčního obvodu
 - *SIMD architektury* _(Single-Instruction Multiple-Data)_
   - na jednu instrukci připadá více dat
@@ -1662,15 +1706,15 @@
     - násobení vektorů a matic, sčítání vektorů a matic, konvoluce matic, ...
   - tyto architektury mají jednu řídicí jednotku a několik výpočetních jednotek
     - výpočetní jednotky v jednu danou chvíli provádí stejnou instrukci na jiných datech
-  - jde tedy hlavně o vektorové procesory:
+  - jde tedy hlavně o vektorové procesory, jsou jimi např.:
     - procesory s rozšířenou instrukční sadou
-      - MMX - Multi-Media Extension
+      - MMX - _Multi-Media Extension_
       - SSE - _Streaming SIMD Extension_
       - 3DNow! 
       - AVX - _Advanced Vector Extension_
       - AMX - _Advanced Matrix Extension_
       - VNNI - _Virtual Neural Network Instructions_
-    - grafické karty - grafické editory, úprava fotek, médii obecně, CUDA
+    - grafické karty - grafické editory, úprava fotek a médii obecně, CUDA
     
 #figure(
     grid(
@@ -1686,16 +1730,16 @@
 - *MISD architektury* _(Multiple-Instruction Single-Data)_
   - jedny data jsou postupně zpracovány více instrukcemi
   - typickým zástupcem jsou systolická pole
-    - homogenní síť úzce spojených DPU, _"Data Processing Units"_, neboli uzlů
-    - z latinského systola, znamená kontrakce srdce - krev = data, kontrakce = více instrukcí
+    - je to homogenní síť úzce spojených DPU, _"Data Processing Units"_, neboli uzlů
+    - z latinského _systola_ - znamená kontrakce srdce - krev jako data, kontrakce jako více instrukcí
   - použítí:
-    - obvody implementující třídicí algoritmy, Hornerovo schéma pro vyčíslení polynomu, násobení matic Cannonovym algoritmem
+    - obvody implementující třídicí algoritmy, Hornerovo schéma pro vyčíslení polynomu, násobení matic Cannonovym algoritmem apod.
 
 - *MIMD architektury* _(Multiple-Instruction Multiple-Data)_
-  - systémy schopní provádět různé instrukce s různými daty
+  - systémy schopné provádět různé instrukce nad různými daty
   - typickými zástupcemi jsou multiprocesory (na GPU) a multipočítače
-  - v praxi se nepíše kód pro každý procesor
-    - všude běží stejný kód - podle ID procesu se zpracovávají různé větve
+  - v praxi se nepíše kód pro každý procesor zvlášť
+    - všude běží stejný kód - podle ID procesu se zpracovávají různé větve kódu
     - mluví se spíš o SPMD _(Single-Program Multiple-Data)_
   - všechny významné paralelní architektury dnes spadají do MIMD kategorie
 
@@ -1710,28 +1754,28 @@
   image("par_sys/image2.png", width: 70%)
 )
 
-*Architektury se sdílenou pamětí* (_ANO Sdílený adresový prostor, NE Distribuovaná paměť_)
-- obsahují fyzicky sdílenou paměť
-  - všechny procesory, výpočetní jednotky, mají stejně rychlý přístup
+*Architektury se sdílenou pamětí* _(ANO Sdílený adresový prostor, NE Distribuovaná paměť)_
+- obsahují fyzicky sdílenou paměť (společná paměť i virtualní adresový prostor)
+  - všechny procesory, výpočetní jednotky, do ní mají stejně rychlý přístup
   - jde o UMA _(Unified Memory Access)_ architektury
-    - stejná adresa na různýc procesorech odkazuje na stejnou paměťovou buňku ve fyzické paměti
+    - stejná adresa na různých procesorech odkazuje na stejnou paměťovou buňku ve fyzické paměti
   - je prostředkem komunikace mezi procesory
     - tvoří úzké místo _(bottleneck)_ - omezuje se počet procesorů (do 100)
 - jednotlivé procesory mají také svou lokální paměť _Cache_
-  - mnohem rychlejší - není přístupná jiným procesorům - už to ale není UMA ale NUMA
+  - mnohem rychlejší - není přístupná jiným procesorům - to už není _UMA_ ale _NUMA (Non-UMA)_
 - typický příklad je SMP _(Symmetric Multiprocessing)_ 
   - grafické karty mívají několik multiprocesorů, každý se svou "Shared Memory" (viz CUDA)
 - standardem pro vývoj je _OpenMP_
 
-*Architektury s distribuovanou pamětí* (_NE Sdílený adresový prostor, ANO Distribuovaná paměť_)
+*Architektury s distribuovanou pamětí* _(NE Sdílený adresový prostor, ANO Distribuovaná paměť)_
 - nemají společnou paměť ani virtuální adresový prostor
-  - adresa do paměti v různých procesorech neodkazují na stejnou fyzickou paměťovou buňku
-- procesory komunikují spolu zasíláním zpráv přes komunikační síť
-  - náročnější z pohledu programátora
+  - adresa do paměti v procesorech neodkazuje na stejnou fyzickou paměťovou buňku
+  - procesory komunikují spolu zasíláním zpráv přes komunikační síť
+    - náročnější z pohledu programátora
 - odstranění společné paměti umožňuje vytvářet systémy s tisíci procesory
-- standardem pro vývoj je _MPI_
+- standardem pro vývoj je _MPI (Message Passing Interface)_
 
-*Architektury se sdíleně-distribuovanou pamětí* (_ANO Sdílený adresový prostor, ANO Distribuovaná paměť_)
+*Architektury se sdíleně-distribuovanou pamětí* _(ANO Sdílený adresový prostor, ANO Distribuovaná paměť)_
   - jde o architektury s distribuovanou pamětí s podporou sdíleného adresového prostoru
   - jde o NUMA _(Non-Unified Memory Access)_
   
@@ -1740,12 +1784,12 @@
 *Porovnání systému se sdíleným a nesdíleným adresovým prostorem*
   - programování postavené na principu zasílání zpráv je náročnější
   - posílání zpráv lze emulovat na systémech se sdílenou pamětí
-    - programy napsané se standardem MPI (Arch. s dist. pam.) běží na SMP (Arch. se sdíl. pam.)
+    - programy napsané se standardem _MPI_ (Arch. s dist. pam.) běží na SMP (Arch. se sdíl. pam.)
     - programy napsané stadardem _OpenMP_ (Arch. se sdíl. pam.) neběží na systémech s dist. pamětí 
 
 *SMP (Symmetric Multiprocessing)* - multiprocesory se sdílěnou pamětí
-- stovky procesoru se skrytou pamětí (Cache)
-- jedna cetrální sdílená paměť
+- stovky procesoru se skrytou pamětí (Cache paměti)
+- mají jednu centrální sdílenou paměť
   - je nutná sychronizace přístupu do této paměti
   - škálovatelnost je limitována propustnosti paměťového rozhraní (Memory Interface)
 - propojavací síťě:
@@ -1756,12 +1800,12 @@
 
 #figure(
   caption: [Projovací síťě u _SMP_ architektur],
-  image("par_sys/image5.png", width: 60%)
+  image("par_sys/image5.png", width: 80%)
 )
 *DMP (Distributed Multiprocessing)* - multiprocesory s distribuovanou pamětí
 - výkonné samostatné počítače s lokalními pamětmi
   - mají-li sdílenou paměť $->$ mohou být také SMP
-- všechny procesory mohou současně přistupovat do svých lokálníhc pamětí
+- všechny procesory mohou současně přistupovat do svých lokálních pamětí
 - škalovatelnost je mnohem vyšší než u SMP
 - projovací síťě:
 #set enum(numbering: "a)")
@@ -1772,34 +1816,34 @@
 
 #figure(
   caption: [Propojovací sítě u _DMP_ architektur],
-  image("par_sys/image4.png")
+  image("par_sys/image4.png", width: 120%)
 )
 #figure(
   caption: [Různé typy projovacíh síťí],
-  image("par_sys/image3.png", width: 60%)
+  image("par_sys/image3.png", width: 55%)
 )
   
 = 36. Vysvětlit Amdahlův zákon a jak bychom se podle něj rozhodovali.
 - u paralelizace je problém růstu výkonnosti jako celku
-  - navýšením výpočetní síly, by měl, v ideálním světě, růst výkon stejným faktorem   
-  - objevují se zde však ztráty výkonu při komunikaci
-    - pomalé sběrnice, nutná koordinace (jeden po druhém)
-  - nerovnoměrné či neoptimální vytížení procesorů
-    - některé procesory pracují naplno, jiné jen se jen někdy zapojí 
-  - neznalost vhodných algoritmů - vyberem neoptimální řešení při řešení problému
+  - navýšením výpočetní síly, by měl (v ideálním světě) růst výkon o stejný faktor   
+  - objevují se zde však ztráty výkonu:
+    - při komunikaci - pomalé sběrnice, nutná koordinace (jeden po druhém)
+    - kvůli nerovnoměrné či neoptimální vytížení procesorů - některé procesory pracují naplno, jiné jen se jen částečné zapojí do zpracování úlohy
+    - kvůli neznalosti vhodných algoritmů - vyberem neoptimální řešení pro řešení problému
 - zrychlení jsou trojího typu:
 #set enum(numbering: "1.")
   + zpomalení - velmi často se systém zpomalí
   + lineární - ideální růst výkonu
   + superlineární - nad-lineární růst výkonu (vzácně)
-- čistě paralelních úloh je velmi málo
+- čistě paralelních úloh je velmi málo:
   - ve většině případů je kombinováno se sériovým zpracováním - program není paralelně zpracován po celou dobu běhu, většina je zpracována sériově 
+  - paralelizace je jenom částečná
 - zrychlení výkonu lze odvodit z Amdahlova zákonu:
-  $ S_z = 1/( (1 - f_p) + f_p/N) #text("nebo") S_z = t/( t f_s + t f_p/N ) $
+  $ S_z = 1/( (1 - f_p) + f_p/N) #text(" nebo   ") S_z = t/( t f_s + t f_p/N ) $
   $ 
   S_z &display(" součinitel zrychlení - poměr doby výpočtu na jednom procesoru k době při částečné paralelizaci") \ 
   f_s &display(" je podílem sériové délky při výpočtu") \
-  f_p &display(" je podílem paralelní délky při výpočtu") (1 = f_s + f_p) \
+  f_p &display(" je podílem paralelní délky při výpočtu") (f_s + f_p = 1 ) \
   t &display(" je celková doba sériového výpočtu") \
   N &display(" je počet použitých procesorů při paralelním výpočtu") \
   $
