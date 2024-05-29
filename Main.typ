@@ -1,16 +1,18 @@
 #set text(lang: "cs")
-
 #set enum(numbering: "1)")
-#set page(
-  numbering: "1 / 1",
-  header: align(right)[
-    APPS - Otázky
-  ],
-)
+#set page(footer: context(
+  smallcaps([
+    Architektury počítačů a paralelních systémů - zkouška
+  #h(1fr)
+  #counter(page).display(
+    "[1 / 1]",
+    both: true,
+  )
+])))
 
-#align(center, text(24pt)[
-  *APPS - Otázky*
-])
+#align(center, 
+  text(22pt)[*Architektury počítačů a paralelních systémů*]
+)
 
 = Monolity
 
@@ -133,7 +135,7 @@
   - instrukční registr - ukládá vykonávanou instrukci
 - zásobník s návratovými adresami
   - buď je v paměti na vyhrazeném místě nebo jako samostatná paměť typu _LIFO_
-  - aby se vědělo kde je vrchol zásobníku je třeba mít _ukazatel na vrchol zásobníku_ (jeko registr)
+  - aby se vědělo kde je vrchol zásobníku je třeba mít _ukazatel na vrchol zásobníku_ (jako registr)
 - zdroje synchronizace mohou být interní a externí:
   - integrován přímo na čipu - není dobrá stabilita (rozdílná tepota způsobí značné odchylky)
     - hodí se tam, kde není potřebna vazba na reálný čas
@@ -169,11 +171,11 @@
 #pagebreak()
   
 = 2. Periférie monolitických počítačů - vybrat si a popsat.
-== Vstupní a vástupní brány (I/O)
-- nejčstější paralelní brána - port
+== Vstupní a výstupní brány _(I/O gates)_
+- nejčastější paralelní brána - port
 - lze nastavit jednotlivě vstupní a výstupní piny (vodiče)
 - obvykle 8 pinů - lze pracovat jako jednot. bity nebo celky
-- umožňuji komunikaci po sériové lince s vnějšími zařízeními
+- umožňují komunikaci po sériové lince s vnějšími zařízeními
 
 == Seriové rozhraní
 - pro přenášení dat mezi periferními zařízeními a procesorem
@@ -185,12 +187,12 @@
   - uvnitř el. zařízení - I2C (Inter Integrated Circuit)
 
 == Čítače a časovače
-- čítač - registr, čítá vnější události (je inkrementován vnějšího signálu)
+- čítač - registr, čítá vnější události (je inkrementován vnějším signálu)
 - časovač - je inkrementován internímy hodinamy
 
 == A/D převodníky
 - fyzikal. veličiny vstupují do MCU v analog. formě (spojité)
-- analog. signál - napětá, proud, odpor
+- analog. signál - napětí _(U - Voltage)_, proud _(I - Current)_, odpor _(R - Resistance)_
 - převede do digital. formy
 - základní typy:
   - komparační A/D převodník
@@ -207,31 +209,30 @@
 == RTC - real time clock
 - hodiny reálného času
 
-== Speciální periferie
-- řízení dobíjení baterii
+== Speciální periférie
+- řízení dobíjení baterií
 - dvoutonový multifrekvenční generátor a přijímač
 - TV přijímač
-- IR vysílač a pčijímač
+- IR vysílač a přijímač
 - řadiče LCD nebo LED
 
 #pagebreak()
 
 = 3. Vysvětlete PWM a kde se používá. Obrázek dobrovolný.
-- buď programová implementace nebo dedikovaným obvodem
-- číslicový signál na výstupu MCU má obvykle 2 konst. napět. úrovně
+- realizován buď programovou implementací nebo dedikovaným obvodem
+- číslicový signál na výstupu MCU má obvykle 2 konstantní napěťové úrovně
   - $U_0$ pro logickou 0 a $U_1$ pro logickou 1
-- poměrem času, kdy je výstup na log. 1 a log. 0, můžeme modulovat z dig. signálu signál analogový (bude roven střední hodnotě napětí)
+- poměrem času, kdy je výstup na log. 1 a log. 0, můžeme modulovat z dig. signálu signál analogový
+  - bude roven střední hodnotě napětí za dobu jedné dané periody
   - čas $T_0$ - U je na úrovni $U_0$
   - čas $T_1$ - U je na úrovni $U_1$
   - perioda - $T = T_0 + T_1$ 
 - střední hodnota napětí, $U#sub[PWM]$, je vypočitána: 
   $ U#sub[PWM] = U_0 + (U_1 - U_0) * T_1/(T_0 + T_1) $
-
 - výstup se zesílí výsupním zesilovačem
 - pro převod PWM pulsu na analog. veličinu se používá RC článek
   - časová konstanta RC musí být výrazně větší než $T$ (toto způsobuje zpomalení)
-- rozlišení výstup. signálu zavisí na počtu bitů komparovaných registrů (PWM Regist a čítač)
-
+- rozlišení výstup. signálu zavisí na počtu bitů komparovaných registrů (_PWM Registr_ a _Čítač_)
 - využití: kontrola jasu LED diod, síly fénu, větráku, LCD pixelu
 - princip u LED/LCD diod: _"Lidské oko nevnímá rychlé blikání jako blikání, ale jako jas."_ 
 
@@ -249,25 +250,27 @@
 
 = 4. A/D a D/A převodníky a k čemu se používají. Nákres dobrovolný.
 == A/D typy:
-  - *A/D komparační* - srovnání měřené analog. veličiny s referenční hodnotou, rozdělenou na několik hodnot v určitém poměru - odporová dělička
-    - paralelní převodník - rozdělujeme měřenou analog. hodnotu na několik hodnot
+  - *A/D komparační* - srovnání měřené analog. veličiny s referenčními hodnotami napětí a to v~určitém poměru (1 : 2 : 4 : 8 : 16 : 32 : 64 : 128 : 256) -- odporová dělička
+    - je to paralelní převodník 
+      - $U#sub[INP]$ se chytne k nějakému komparátoru stejného nebo podobného napětí
+      - vybraný komparátor bude mít na výstupu 1 a ostatní 0 
+      - kóder převede tento signál do binarního formátu
     - velmi rychlé - více komparátoru roste přesnost
-    - kóder převede do binarního formátu
     
 #figure(
   caption: "Komparační A/D převodník - odporová dělička",
-  image("monolity/image4.png", width: 34%)
+  image("monolity/image4.png", width: 33%)
 )
 
-  - *A/D převodník s D/A převodem* - jeden komparátor, mění se ref. hodnota
+  - *A/D převodník s D/A převodem* - jeden komparátor, mění se referenční hodnota
     - podle způsobu řízení ref. hodnoty, dělíme na sledovací a aproximační
       - sledovací: 
         - najde měřenou hodnotu postupnou inkrementací a dekrementací ref. hodnoty o jeden krok
         - je pomalý - vhodný pro měření pomalu měnicích se veličin - teplota, vlhkost
       - aproximační:
-        - ref. hodnota na počátku ve středě mezi minimem a maximem měřitelného rozsahu
-        - podle výsledku komparátoru měřené hodnoty s ref. hodnotou vždy posune ref. hodnotu nahoru nebo dolů o polovinu zbytku intervalu
-        - složitost algoritmu je $log_2n$, kde $n$ je počet měřitelných hodnot
+        - ref. hodnota je na počátku ve středě mezi minimem a maximem měřitelného rozsahu napětí
+        - podle výsledku komparátoru měřené hodnoty s ref. hodnotou se vždy posune ref. hodnotu nahoru nebo dolů o polovinu zbytku intervalu
+        - složitost algoritmu je $O(log_2n)$, kde $n$ je počet měřitelných hodnot -- jde o binární vyhledávání
 
 #figure(
   caption: "A/D převodník s D/A převodem",
@@ -283,7 +286,7 @@
       - integruje se dle ref. napětí $U_R$ opačné polarity k $U#sub[INP]$
     - nyní se po dobu $T_2$ integruje $U_R$ dokud $U_1$ neklesne na $0V$
     - doba $T_2$ je závislá na $U_1$ na konci $T_1$ - z ní lze získat hodnotu měřeného napětí:
-    $ U#sub[INP] = T_2/T_1 * U_R $
+    $ U#sub[INP] = -(T_2/T_1 dot U_R) $
 
     
 - *A/D převodník s RC článkem:*
@@ -293,9 +296,9 @@
       - teď necháme konden. $C$ vybíjet 
         - přes stejný odpor dokud $U$ v konden. neklesne na hodnotu $U#sub[KOMP]$
         - přičémž měříme čas vybíjení $T#sub[REF]$
-      - to samé uděláme s měřenýn odporem $R#sub[INP]$ - získáme tím čas vybíjení $T#sub[INP]$
+      - to samé uděláme s měřenýn odporem $R#sub[INP]$ - získáme tím čas vybíjení $T#sub[INP]$ (na obrázku je $T_s$)
       - hodnotu vstupního napětí, $R#sub[INP]$, získáme vztahem:
-      $ R#sub[INP] = R#sub[REF] * (T#sub[INP])/(T#sub[REF]) $
+      $ R#sub[INP] = R#sub[REF] dot (T#sub[INP])/(T#sub[REF]) $
       
 
 #figure(
@@ -316,27 +319,27 @@
   - *paralelní převodník*
     - je rychlý
     - založeny na přímém převodu dig. hodnoty na analog. veličinu
-    - základem je odporová síť, na níž se vytvářejí částešné výstupní proudy:
-      - váhově řazené hodnoty - rezistory s odporem v poměrech 1:2:4: ... :64:128
+    - základem je odporová síť, na níž se vytvářejí částečné výstupní proudy:
+      - váhově řazené hodnoty - rezistory s odpory v poměrech 1 : 2 : 4 : ... : 64 : 128
       - R-2R - stačí rezistory s odpory R a 2R
 
 #figure(
-  caption: "paralelní D/A převodník řešenými pomocí R-2R",
+  caption: "Paralelní D/A převodník řešený pomocí R-2R",
   image("monolity/image3.png", width: 39%)
 )
 
-= 5. I2C - co, jak, kde, naskreslit.
-- sériová komunikační sběrnice
-- umožňuje přenos dat mezi různými zařizeními
-- vyvinuta firmou Phillips 
-  - stala se populární mezi integrovanými obvody a perifer. zařizeními
+= 5. I2C - co to je, jak funguje, kde se používá a naskreslit.
+- je sériová komunikační sběrnice
+  - umožňuje přenos dat mezi různými zařizeními
+- byla vyvinuta firmou Phillips 
+  - stala se populární mezi integrovanými obvody _(IC - integrated circuit)_ a perifer. zařizeními
   - pro svou jednoduchost a snadnou rozšířitelnost
 - funguje na základě 2 obousměrných vodičů (ty mohou nabývat hodnot log. 0 a log. 1):
-  - SDA (Serial Data Line) - pro přenos dat mezi zařizeními, data jsou zasílana sériově po bitech
-  - SCL (Serial Clock Line) - pro synchronizaci přenosu 
-- funguje ve formě přenosu dat mezi Master a Slave zařizeními
-  - *Master* - zodpovědný za řízení komunikace, inicijuje přenos
-  - *Slave* - řízení přijímá a vykoná (vykoná funkci, předá zpět data)
+  - SDA _(Serial Data Line)_ - pro přenos dat mezi zařizeními, data jsou zasílana sériově po bitech
+  - SCL _(Serial Clock Line)_ - pro synchronizaci přenosu 
+- funguje ve formě přenosu dat mezi _"Master"_ a _"Slave"_ zařizeními
+  - *_Master_* - zodpovědný za řízení komunikace, inicijuje přenos
+  - *_Slave_* - řízení od _"Master"_ přijímá a vykoná (vykoná funkci / předá zpět data)
 - praxe:
   - v klidovém stavu obě na log. 1
   - komunikace se zahajuje řídicím signálem START - přivedením SDA na 0, hned po ní SCL na 0 
@@ -344,10 +347,11 @@
     
 #figure(caption: "Znázornění START a STOP řídicích signálů na SCL a SDA vodičích", image("monolity/image8.png", width: 40%) )
 
-  - musíme na začátku komunikace adresovat "slave" zařízení, se kterým chceme komunikovat, a zadat směr komunikace - zda chceme číst (RD) od nebo zapisovat (WR) do "slave" zařízení:
-    - po SDA předáme adresu zařízení - pokud adresované zařízení zaznamená, vyšle ACK (log. 0) po datovém vodiči
-    - 1 byte informace - 7 bitů slouží pro adresování zařízení a 1 bit (LSB) pro směr komunikace
-  - zápis/write - posílame byte postupně po bitu, po každém bytu dat musí "slave" vyslat ACK 
+  - musíme na začátku komunikace adresovat _"Slave"_ zařízení, se kterým chceme komunikovat, a zadat směr komunikace - zda chceme číst _(RD)_ od nebo zapisovat _(WR)_ do _"Slave"_ zařízení:
+    - po SDA předáme adresu zařízení s řídicím bitem _RD_ nebo _WR_ jako 1 byte dat 
+      - 7 bitů slouží pro adresování zařízení a 1 bit (LSB) pro směr komunikace
+      - pokud adresované zařízení zaznamená, vyšle ACK (log. 0) po datovém vodiči
+  - zápis/write - posílame byte postupně po bitech, po každém bytu dat musí _"Slave"_ vyslat ACK 
   - čtení/read - očekaváme data od zařízení, po každém bytu, který přijmem, vyšlem ACK
   
 
@@ -355,30 +359,35 @@
 = 6. Popiš a nakresli schéma mikropočítače, se kterým ses seznámil.
 == Raspberry Pi RP2040
 #show link: underline
-#link("https://datasheets.raspberrypi.com/rp2040/rp2040-product-brief.pdf")[specifikace přímo od Raspberry Pi]\
-#link("https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf")[obrázek monolitu RP2040 přímo od Raspberry Pi]
-#image("monolity/image9.png")
+#link("https://datasheets.raspberrypi.com/rp2040/rp2040-product-brief.pdf")[[specifikace přímo od Raspberry Pi]]\
+#link("https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf")[[obrázek monolitu RP2040 přímo od Raspberry Pi]]
+#figure(
+  caption: [Schéma mikropočítače / mikroprocesoru / monolitu / monolitckého počítače RP2040],
+  image("monolity/image10.png", width: 80%)
+)
 - dual ARM Cortex-M0+
   - 2 cores/jádra
 - SRAM - 264kB, 6 na sobě nezávislých bank 
 - až 16Mb pro off-chip Flash pamět pro program - přes QSPI port
 - DMA řadič
-- fully connected AHB bus fabric - propojovací síť všech komponent s procesorem
-- LDO - Low-Dropout Regulator - pro generování core voltage supply
-- PLL - phased-locked loops - pro generování hodinového signálu pro USB rozhraní a core clock
-- GPIO - Genereal Purpose IO - piny pro obecné připojení periferií
+- fully connected AHB _(Advanced High-performance Bus)_ 
+  - propojovací síť všech komponent s procesorem
+- LDO _(Low-Dropout Regulator)_ - pro generování core voltage supply
+- PLL _(Phased-Locked Loops)_ - pro generování hodinového signálu pro USB rozhraní a core clock
+- GPIO _(Genereal Purpose IO)_ - piny pro obecné připojení periferií
 - periférie:
-  - UART (Universal Asynchronous Receiver-Transmitter)
-  - SPI (Serial Pedripheral Interface)
-  - I2C (Inter-Intergrated Circuit)
-  - PWM (Pulse Width Modulation)
-  - PIO (Programmable I/O)
-  - RTC (Real Time Clock)
-  - watchdog
-  - reset control
-  - timer
-  - sysinfo & syscontrol
-  - ADC (A/D converter)
+  - UART _(Universal Asynchronous Receiver-Transmitter)_
+  - SPI _(Serial Pedripheral Interface)_
+  - I2C _(Inter-Intergrated Circuit)_
+  - PWM _(Pulse Width Modulation)_
+  - PIO _(Programmable I/O)_ - pro naprogramování vlastního protokolu komunikace
+  - RTC _(Real Time Clock)_
+  - Watchdog
+  - Reset Control
+  - Timer
+  - Sysinfo & Syscontrol
+  - ADC _(A/D converter)_
+
 
 //////////////////////////////////////////////////////////////////////////////////////////*
 //////////////////////////////////////////////////////////////////////////////////////////*
@@ -390,32 +399,37 @@
 #align(center, text(24pt)[*Disky*])
 
 = Otázky:
-6. Fyzikální popis HDD čtení, zápis a nákres. Vysvětlit podélný a kolmý zápis.
+7. Fyzikální popis HDD čtení, zápis a nákres. Vysvětlit podélný a kolmý zápis.
 + Popište a nakreslete stavbu disku. Nechtěl zápis.
 + Čtení CD - princip a obrázek.
 
-= 6. Fyzikální popis HDD - čtení, zápis a nákres. Vysvětlit podélný a kolmý zápis.
-Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická vrstva nanesena na plotnu disku (většinou sklo nebo slitina hliníku).
-- pracuje s magnet. záznamem
+= 7. Fyzikální popis HDD - čtení, zápis a nákres. Vysvětlit podélný a kolmý zápis.
+- médium HDD _(Hard Disk Drive)_, na kterém se data ukádají, je feromagnetická vrstva nanesena na plotnu disku (většinou sklo nebo / slitina hliníku)
+- pracuje s magnetickým záznamem
 - feromagnetická vrstva dokáže uchovat magnetická pole
-- záznamová/zapisovací hlava - jádro s navlečenou cívkou 
-- vrstva feromagneticka je trvale zmagnetována záznamovou hlavou
-- v bodu dotyku hlav (zapisovací a čtecí) nebo v nepatrné vzdálenosti je štěrbina (1μm)
+- záznamová/zapisovací hlava - jádro s úzkou štěrbinou (1μm) a navlečenou cívkou 
+  - vrstva feromagnetická je trvale zmagnetována záznamovou hlavou
+  - v bodu dotyku hlav (zapisovací a čtecí) nebo v nepatrné vzdálenosti s médiem je štěrbina 
 == Zápis na disk  
   - při průchodu el. proudu proudí magnet. tok jádrem 
-  - jádro v části, kde je nejblíže záznamové vrstvě přerušeno úzkou štěrbinou vyplněnou nemagnetickou látkou (nejčastěji bronz) nebo ničím (vzduchem)
-  - v místě štěrbiny dochází k mag. stínění jádra a následnému vychýlení indukčních čar z jádra cívky do feromagnetické vrstvy disku
+  - jádro v je části, kde je nejblíže záznamové vrstvě, přerušeno úzkou štěrbinou vyplněnou nemagnetickou látkou (nejčastěji bronz) nebo "ničím" (vzduchem)
+  - v místě štěrbiny dochází k magnatickému stínění jádra a následnému vychýlení indukčních čar z jádra cívky do feromagnetické vrstvy disku
   - měněním směru el. proudu v cívce se mění směr magnet. toku jádrem i štěrbinou a tím smysl magnetizace aktivní vrstvy
 == Čtení z disku
-  - na aktiv. vrstvě jsou místa magnetizované tím či oním směrem - mezi nimi jsou místa magnet. přechodu - _"magnetiké rezervace"_
+  - na aktiv. vrstvě jsou místa magnetizované tím či oním směrem - mezi nimi jsou místa magnetického přechodu - tzv. _"magnetiké rezervace"_
   - právě ony představují zapsanou informaci
-  - při čtení se disk pohybuje stejným směrem konst. rychlostí
+  - při čtení se disk pohybuje stejným směrem konstantní rychlostí
   - změny mag. pole na feromag. vrstvě způsobují napěťové impulsy na svorkách cívky čtecí hlavy
-  - impulsy jsou zesíleny el. zesilovači
+  - impulsy jsou nádledovně zesíleny elektrickými zesilovači
 
 #figure(
   caption: "Princip magnetického zápisu na feromagnetickou vrstvu disku",
   image("disky/image1.png", width: 80%)
+)
+
+#figure(
+  caption: [Podélný a kolmý zápis aktivní vrstvy pevného disku],
+  image("disky/image5.png", width: 80%)
 )
 
 == Podélný zápis (longitudinální zápis) 
@@ -429,11 +443,10 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 - to umožňuje menší a hustší záznam dat na povrchu disku - zvyšuje kapacitu pevného disku
 - při kolmém zápisu jsou magnetická pole stabilnější a méně náchylná k rušení
 
-= 7. Popište a nakreslete stavbu pevného disku. Nechtěl podélý a kolmý zápis.
-- uzavřená jednotka v počítači používaná pro trvalé ukládání dat (nevolatilní)
+= 8. Popište a nakreslete stavbu pevného disku. Nechtěl podélý a kolmý zápis.
+- je to uzavřená jednotka v počítači používaná pro trvalé ukládání dat (nevolatilní)
 - pouzdro chrání disk před nečistotami a poškozením
-- obsahuje nevýjmutelné pevné plotny diskového tvaru (slitiny hliníku/sklo) - termín pevný disk
-  
+- obsahuje nevýjmutelné pevné plotny diskového tvaru (slitiny hliníku / sklo) - odtud _pevný_ disk
 - části pevného disku:
   - plotny disku
   - hlavy pro čtení a zápis
@@ -442,11 +455,13 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   - pohon ploten disku
   - řídící deska (deska s elektronikou)
   - kabely a konektory
-  
+
+#pagebreak()
+
 == Geometrie disku
 - uspořádání prostoru na disku - počet hlav, cylindrů a stop
 - data jsou na disk ukládána v bytech
-- byty jsou uspořádány do skupin po 512 (nové 4KiB) zvané sektory
+- byty jsou uspořádány do skupin po 512 bytech (nové 4KiB) zvané sektory
 - sektor je nejmenší jednotka dat, kterou lze na disk zapsat nebo z disku přečíst
 - sektory jsou seskupeny do stop 
 - stopy jsou uspořádány do skupin zvaných cylindry nebo válce
@@ -476,23 +491,24 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 - z tohoto důvodu většina výrobců neuvádí počet stop, ale počet cylindrů
 
 === Sektory 
-- jedna stopa příliš velkou jednotku pro ukládání dat (100kB či více bytů dat)
-  - stopa rozděluje na několik očíslovaných částí nazývané sektory
+- jedna stopa je příliš velkou jednotku pro ukládání dat (100kB či více bytů dat)
+  - stopa se rozděluje na několik očíslovaných částí nazývané sektory
 - můžeme si je představit jako výseče na plotně
 - nejmenší adresovatelná jednotka na disku
 - její velikost určí řadič při formátování disku
 - na rozdíl od hlav nebo cylindrů, číslujeme od jedničky
 - na začátku sektoru je hlavička, identifikující začátek sektoru a obsahující jeho číslo
 - konec - tzv. zakončení sektoru 
-  - pro ukládání kontrolního součtu - slouží ke kontrole integrity uložených dat
-- jednotlivé sektory se oddělují mezisektorovými mezerami (není možné uložit data)
-- proces čtení sektoru se skládá ze dvou kroků
+  - pro ukládání kontrolního součtu _(ECC - Error Correcting Code)_ 
+    - slouží ke kontrole integrity uložených dat
+- jednotlivé sektory se oddělují mezisektorovými mezerami - není zde možné uložit data
+- proces čtení sektoru se skládá ze dvou kroků:
   - čtecí a zápisová hlava musí přemístit nad požadovanou stopu
   - potom se čeká, až se disk natočí tak, že požadovaný sektor je pod hlavou, a pak probíhá čtení
 - přemístění hlavy obvykle zabere nejvíce času
 - nejrychleji se tedy čtou soubory, jejichž sektory jsou všechny na stejné stopě a stopy jsou umístěny nad sebou v jednom cylindru
 
-= 8. Čtení CD - princip a obrázek.
+= 9. Čtení CD - princip a obrázek.
 - čtení zaznamenaných dat probíhá způsobem, kdy laser v přehrávači CD snímá z povrchu disku zaznamenaný vzor
 - laser je umístěn rovnoběžně s povrchem disku
 - paprsek je na disk odrážen zrcadlem přes dvě čočky
@@ -512,8 +528,8 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   - na čtenou stopu přesune servomotor zrcátko na základě příkazů z mikroprocesoru
   - po dopadu paprsku na jamky a pevniny, resp. pity a pole, se světlo láme a odráží zpátky
   - dále je zaostřováno čočkou, nacházející se pod médiem
-  - od čočky světlo prochází pohyblivým zrcátkem (reflexní)
-  - odražené světlo dopadá na fotocitlivý senzor
+  - od čočky světlo prochází pohyblivým zrcátkem - reflexní zrcadlo
+  - odražené světlo dopadá na fotocitlivý senzor - fotodioda
     - převádí světelné impulsy na elektrické
     - samotné elektrické impulsy jsou dekódovány mikroprocesorem a předány do počítače ve formě dat
 
@@ -543,8 +559,9 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 = 9. Popište a nakreslete technologii LCD - výhody, nevýhody, rozdíl mezi pasivním a aktivním.
 
 - používá tekuté krystaly k zobrazení jednotlivých pixelů
+- v základě jsou dvojího typu: TN a IPS
 
-== Princip TN (Twisted Nematic)
+== Princip TN _(Twisted Nematic)_
   1. světlo projde polarizačním filtrem a polarizuje se
   + projde vrstvami tekutých krystalů - světlo se otočí o 90°
   + projde druhým polarizačním filtrem (které je otočené o 90° proti prvnímu)
@@ -553,7 +570,7 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   - nutno podsvítit bílým světlem (elektroluminiscenční výbojky, LED, OLED)
   - vrstva krystalů je rozdělená na malé buňky stejné velikosti, tvořící pixely
   
-== Princip IPS
+== Princip IPS _(In-Place Switching)_
   - podobné TN
   - krystaly jsou uspořádány v rovině
   - elektrody jsou po obou stranách buňky v jedné vrstvě
@@ -583,14 +600,14 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 )
 
 == Pasivní LCD
-  - obsahuje mřížku vodičů, body se nacházejí na průsečicích mřížky
+  - obsahuje mřížku vodičů, body se nacházejí na průsečících mřížky
   - při vyšším počtu bodů narůstá potřebné napětí → rozostřený obraz, velká doba odezvy (3 FPS) nevhodné pro hry, filmy, televizi atd.
   - používá se v zařízeních s malým displejem (hodinky)
   
 == Aktivní LCD
-  - každý průsečík v matici obsahuje tranzistor nebo diodu, řídicí činnost daného bodu
+  - každý průsečík v matici obsahuje tranzistor nebo diodu - řeší řídicí činnost daného bodu
   - lze rychle a přesně ovládat svítivost každého bodu
-  - TFT (Thin Film Transistor) izolují jeden bod od ostatních
+  - TFT _(Thin Film Transistor)_ izolují jeden bod od ostatních
 
 #figure(
     grid(
@@ -612,8 +629,8 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
       - kvalita obrazu
       - životnost
       - spotřeba energie
-      - odrazivost a solnivost
-      - bez emisi
+      - odrazivost a oslnivost
+      - bez emisí
   ],
   [ 
     == Nevýhody:
@@ -629,10 +646,10 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 #pagebreak()
 
 = 10. Popište a nakreslete technologii OLED - výhody, nevýhody.
-- hlavním prvkem - organická dioda emitující světlo (Organic Ligh Emitting Diode)
+- hlavním prvkem - organická dioda emitující světlo _(Organic Ligh Emitting Diode)_
 - po přivedení napětí na obě elektrody se začnou eletrony hromadit v org. vrstvy blíže k anodě
 - díry, představující kladné částice, se hromadí na opačné straně blíže ke katodě
-- v organické vrstvě začně docházet ke "srážkám" mezi elektrony a dírami a jejich vzájemné eliminaci, doprovázené vyzářením energie ve formě fotonu - *rekombinace*
+- v organické vrstvě začně docházet ke "srážkám" mezi elektrony a dírami a jejich vzájemné eliminaci doprovázené vyzářením energie ve formě fotonu - *rekombinace*
 
 #figure(
   caption: [Základní struktura OLED diody],
@@ -684,12 +701,13 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   - EPD nepotřebují elektrický proud
 - inkoust tvořen mikrokapslemi (\~ desítky-stovky µm)
 - částice v kapslích se přitahují k elektrodě s opačnou polaritou
-- roztok - hydrokarbonový olej (částice vydrží na míste i po odpojení napájení)
-- černé částice jsou z uhlíku
-- bíle z oxidu titaničitého
+- roztok - hydrokarbonový olej (díky jeho viskozitě vydrží částice na míste i po odpojení napájení)
+- černé částice jsou z uhlíku -- C
+- bíle z oxidu titaničitého -- TiO#sub[2]
+- obal z oxid křemičitého -- SiO#sub[2] -- a tenké vrstvy polymeru
 - k pohybu částic je potřeba proud \~ desítky nA při napětí 5-15 V
 - pro barvy se používají barevné filtry (stejně jako u LCD)
-  - barevná hloubka - 4096 (16#super[3])
+  - barevná hloubka - 4096 $((2^4)^3 = 16^3)$
 
 #figure(
   caption: [Technologie _E-ink_ - pohled na kapsle ze strany],
@@ -741,31 +759,36 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 
 
 = 13. Popište na RISC procesoru zřetězené zpracování instrukcí, jaké má chyby a jak se řeší.
-- procesor je sekvenční obvod - vstup - instrukce a data z paměti, výstup - výsledky uloženy do paměti
+- procesor je sekvenční obvod 
+  - vstup - instrukce a data z paměti
+  - výstup - výsledky uloženy do paměti
 - instrukce jsou vždy zpracovány stejným způsobem v několika fázích, např.:
-  1. *VI* Výběr instrukcí z paměti (Instruction Fetch)
-  + *DE* Dékódování (Instruction Decoder)
-  + *VA* Výpočet adresy operandů (Operand Address Calculation) - získá se adresa operandů, se kterou instrukce pracuje 
-  + *PI* Provedení instrukce (Instruction Execution)
-  + *UV* Uložení výsledku zpět do paměti
+  1. *VI* -- Výběr instrukcí z paměti (Instruction Fetch)
+  + *DE* -- Dékódování instrukce (Instruction Decoder)
+  + *VA* -- Výpočet adresy operandů (Operand Address Calculation) 
+    - získá se adresa operandů, se kterou instrukce pracuje 
+  + *PI* -- Provedení instrukce (Instruction Execution)
+  + *UV* -- Uložení výsledku zpět do paměti (Store Result)
 - instrukce projde všemi těto fázemi - pokud by trvala každá fáze 1 stroj. cyklus, tak by se 1 instrukce vykonala za 5 stroj. cyklů
 - instrukce $I_2$ se nemůže vykonat, když procesor zpracovává inst. $I_1$
 - osamostatněním jednot. fází vlastními obvody - je možné instr. zřetězit
   - zatímco *VI* vybíra instrukci z paměti, může *DE* dekédovat instr., kterou před jedním stroj. cyklem vybrala *VI* z paměti
   - teoreticky se tím zvýší výkon o násobek hloubky zřetězení
-    - tomuto zrychlení avšak zabraňují podmíněné skoky 
-      - adresa IP se změní - rozpracované instrukce jsou neplatné - musí se _flushnout_ fronta instrukcí - *_problém plnění fronty_*
-      - existují mechanismy jak tomu předcházet
-        - predikce skoku (_Brach Prediction_)
-          - jednobitová - v instrukci skoku je 1 bit vyhrazen pro _flag_, který předpovídá, jestli se bude či nebude skákat (přepíná se po jednom vykonání a nevykonání skoku)
-          - dvoubitová - v instrukci jsou vyhrazeny 2 bity (přepína se až po dvou konsukutivních vyhodnocení skoku)
-        - zpoždění skoku - pokud možno, vykonají se instruce jiné ještě před instrukcí skoku (i přesto, že jim v programu instrukce skoku předchází)
-        - buffer s pamětí skoků (_Branch Target Buffer_) - pamatuje si stovky tzv. _target_ adres skoků
-    - strukturální hazardy
-      - pomalé sběrnice a registry mezi jednotkami jednot. fází
-      - musí se koordinovat
-    - datové hazardy
-      - instrukce potřebuje výsledky od instrukce, která ještě nebyla vykonána
+    - tomuto zrychlení avšak zabraňují podmíněné skoky, datové a strukturální hazardy
+      - podmíněné skoky:
+        - neví se, kdy se skok provede a kdy ne
+        - adresa IP se změní - rozpracované instrukce jsou neplatné - musí se _flushnout_ fronta instrukcí - *_problém plnění fronty_*
+        - existují mechanismy jak tomu předcházet
+          - predikce skoku (_Brach Prediction_)
+            - jednobitová - v instrukci skoku je 1 bit vyhrazen pro _flag_, který předpovídá, jestli se bude či nebude skákat (přepíná se po jednom vykonání a nevykonání skoku)
+            - dvoubitová - v instrukci jsou vyhrazeny 2 bity (přepína se až po dvou konsekutivních vyhodnocení skoku)
+          - zpoždění skoku - pokud možno, vykonají se instruce jiné ještě před instrukcí skoku (i přesto, že jim v programu instrukce skoku předchází)
+          - buffer s pamětí skoků (_BTB -- Branch Target Buffer_) - pamatuje si stovky tzv. _target_ adres skoků
+      - strukturální hazardy:
+        - pomalé sběrnice a registry mezi jednotkami jednot. fází
+        - musí se koordinovat přístup ke sběrnici
+      - datové hazardy:
+        - instrukce potřebuje výsledky od instrukce, která ještě nebyla vykonána
 #figure(
   caption: "Sériové zpracování instrukcí - CISC",
   image("RISC/image4.png")
@@ -784,18 +807,18 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 = 14. Popište na RISC procesoru zřetězené zpracování instrukcí a jak nám pomůže predikce skoku.
 - viz 13. otázku - jak funguje zřetězené zpracování instrukcí
 - typy řešení predikcí skoků - _jednobitová, dvoubitová, BTB_:
-  - jednobitová
-    - ve formátu instrukce skoku se vyhradí jeden pro uložení stavu _flagu_ predikující, zda se skok vykoná či ne
-    - buď _flag_ nastaví _staticky_ programátorem/kompilátorem (_hard coded_)
-    - nebo se nastavuje při běhu programu _dynamicky_ dle výsledku podmínky předchízejicí skoku
+  - _jednobitová_ predikce:
+    - ve formátu instrukce skoku se vyhradí jeden bit pro uložení stavu _flagu_ predikující, zda se skok vykoná či ne
+    - buď se _flag_ nastaví _staticky_ programátorem/kompilátorem _(hard coded)_
+    - nebo se nastavuje při běhu programu _dynamicky_ dle výsledku podmínky předcházejicího skoku
     - v cyklu k selhání predikce dojde vždy 2x - první a poslední iterace
-  - dvoubitová 
+  - _dvoubitová_ predikce:
     - vyhradí se dva bity - 4 možné hodnoty/stavy
     - funguje jako stavový automat se 4 stavy - NE = nebude se skákat, ANO = bude se skákat
-      - 00 (ANO) - stály skákání
-      - 01 (ANO) - jeden neprovedený skok
-      - 10 (NE) - jeden provedený skok
-      - 11 (NE) - stálý stav "neskákání"
+      - 00 _(ANO)_ - stálý stav skákání
+      - 01 _(ANO)_ - jeden neprovedený skok
+      - 10 _(NE)_ - jeden provedený skok
+      - 11 _(NE)_ - stálý stav "neskákání"
     - přechody $a$ a $n$ ukazují jestli se naposledy skákalo či ne
     - v cyklu omezí počet selhání na jeden
     
@@ -803,9 +826,9 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   caption: "Dvoubitová predikce - čtyřstavový automat",
   image("RISC/image3.png", width: 70%)
 )
-  - BTB (Branch Target Buffer) 
+  - _BTB (Branch Target Buffer):_ 
     - tabulka s uloženými adresami provedených podmíněných skoků
-    - ať už jednobitová nebo dvounitová predikce
+    - ať už jednobitová nebo dvoubitová predikce
     - většinou implementována přímo na procesorech
     - může mít až tisíce položek
 
@@ -816,12 +839,12 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 - viz předchozí otázky - popsaný datové a strukturální hazardy, problematika zpracování podmíněných skoků
 
 = 16. Popiš základní konstrukci a vlastnosti mikroprocesoru RISC.
-- malý instrukční soubor
+- mají malý instrukční soubor
 - vývojová větev RISC vyvinula řadu zásadních kritérií, charakterizujících metodiku návrhu nejen procesoru, ale celého počítače
-- procesor - přenechat jen tu činnost, která je nezbytně nutná
+- procesoru se má přenechat jenom ta činnost, která je nezbytně nutná
   - další potřebné funkce přenést do architektury počítače, programového vybavení a kompilátoru
 - výsledkem návrhu jsou zejména tyto vlastnosti:
-  - jedna instrukce dokončena každý stroj. cyklus
+  - jedna instrukce dokončena každý strojový cyklus
   - mikroprogramový řadič (software) nahrazen rychlejším obvodovým řadičem (fyz. dráty)
   - zřetězené zpracování instrukcí
   - počet instrukcí a způsobů adresování je malý
@@ -829,7 +852,6 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   - instrukce mají pevnou délku a jednotný formát
   - použit vyšší počet registrů
   - složitost se z technického vybavení přesouvá částečně do optimalizujícího kompilátoru
-
 - všechny uvedené vlastnosti tvoří dobře promyšlený a provázaný celek:
   - navýšení počtu registrů & omezení komunikace s pamětí na dvě instrukce LOAD a STORE
     - ostatní instrukce nemohou používat pam. operandy - třeba mít v procesoru více dat
@@ -837,22 +859,21 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
     - jednotná délka instrukcí dovoluje rychlejší výběr instrukcí z paměti 
     - zajišťuje lepší plnění fronty instrukcí 
     - jednotný formát zjednodušuje dekódování instrukcí
-  
   - výsledné počítače vytvořené podle těchto pravidel přinášejí výhody pro uživatele i pro výrobce
     - zkracuje se vývoj procesoru - již první realizované čipy fungují správně
   - architektura RISC má i své nedostatky 
     - nutný nárůst délky programů - tvořený omezeným počtem instrukcí jednotné délky 
       - zpomalení, které by z toho mělo nutně plynout, se ale v praxi nepotvrdilo
         - procento instrukcí, které muselo být rozepsáno, je malé
-    - přesto se většina výrobců CISC procesorů uchýlila při výrobě procesorů k realizaci stále většího počtu vlastností arch. RISC
+    - většina výrobců CISC procesorů se uchýlila při výrobě procesorů k realizaci stále většího počtu vlastností arch. RISC
 
 #pagebreak()
 
 = 17. Popiš a nakresli schéma RISC procesoru, se kterým ses seznámil.
 == ARM Cortex A77
 - frekvence 3 GHz
-- ARM v8-A architektura (hardvardká arch.)
-- 64-bitová instrukční sada s SIMD rozšířením
+- ARM v8-A architektura (harvardká arch.)
+- 64-bitová instrukční sada se SIMD rozšířením
 - 13-ti úrovňové zřetězení
 - 8 jader
 - cache:
@@ -862,23 +883,24 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 - výpočetní jednotky: 4x ALU, FPU, ASIMD, 2x Branch
 - prediktor větvení - až 8000 položek
 - macro-OP cache - až 1500 položek
-  - ukládá již dekédované instrukce
+  - ukládá již dekódované instrukce
   - urychluje vykonávání smyček - nemusí se vždy instrukce uvnitř cyklu dekódovat znovu
-  - dokóder - 6 instrucí / cyklus
-  - využití
-    - modbilní zařízení s Android
-    - SoC (System On Chip) - mikrokontroléry/monolity
+  - dekóder - 6 instrucí / cyklus
+- využití:
+  - mobilní zařízení s Android
+  - SoC (System On Chip) - mikrokontroléry/monolity
+
 #figure(
   caption: "Architektura ARM A77",
-  image("RISC/image2.png")
+  image("RISC/image2.png", width: 120%)
 )
 #figure(
   caption: "Architektura ARM A77",
-  image("RISC/image7.png", width: 80%)
+  image("RISC/image7.png", width: 100%)
 )
 #figure(
   caption: "mrtka",
-  image("RISC/image1.png")
+  image("RISC/image1.png", width: 50%)
 )  
 
 //////////////////////////////////////////////////////////////////////////////////////////*
@@ -900,20 +922,20 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   - hybridní arch. _"Alder Lake"_ - na jednom čipu dvě rozdílné arch. jader
   - nastavila nový standard
 - 10 nm - Enhanced Super-Fin _(Intel 7)_
-- 16 jader
+- 16 jader:
   - 8 P-cores - arch. _"Golden Cove"_, vhodné pro hry, videa, grafic. editory
   - 8 E-cores - arch. _"Gracemont"_, daemon aplikace, méně zatěžujicí úlohy
 - taktovací frakvence - 3,2 GHz (base-mode) až 5,2 GHz (turbo-mode)
 - cache:
-  - L1: 80 KB per P-core, blízko jednot. jader
-  - L2: 1,25 MB per E-core, mezi CPU a hlavní pamětí
+  - L1: 80 KB per P-core (32KB I-cache + 48KB D-cache), blízko jednot. jader
+  - L2: 1,25 MB per P-core, 2MB per E-core, mezi CPU a hlavní pamětí
   - L3: 30 MB společná sdílená pamět všech jader
 - podpora DDR4 _(Double Data Rate)_ a DDR5 čipů SDRAM
   - vysoká propustnost - rychlý přenos dat mezi hlavní pamětí a procesorem
 - podpora PCIe 4.0 _(Peripheral Component Interconnect Express)_ a PCIe 5.0
   - komunikace CPU s I/O zařízeními (GPU, SSD, ...)
 - integrovaná grafika na čipu _Intel UHD Graphics 770_
-- out-of-order vykonávání instrukcí
+- _"out-of-order"_ vykonávání instrukcí (512 položek na P-core, 256 položek na E-core)
 - _"Ringbus"_ - název bus fabric od Intel, sběrnicová spojnice
 - nový _"Thread Director"_ - nutný kvůli hybridnímu designu, pro rovnoměrného rozdělení zátěže úloh
 
@@ -935,6 +957,26 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   image("cisc/image3.png", width: 80%)
 )
 
+== Golden Cove
+- Branch Predictor
+  - BTB - \~12000 entries
+- L1 I-cache 32KB
+- L1 D-cache 48KB
+- L2 cache 1.25MB
+- 6 instructions / cycle
+- 512 entry ROB _(Re-Order Buffer = Out-Of-Order Window)_
+- 11 Execution Units:
+  - VALU _(Vector ALU)_
+  - FPU
+  - Branch
+- supports these instruction sets:
+  - FMA - extension of SSE _(Streaming SIMD Extension)_
+  - AMX _(Advanced Matrix Extension)_
+  - AVX-512 _(Advanced Vector Extension)_
+  - VNNI _(Virtual Neural Network Instructions)_
+- 2x Store Data, 2x Store AGU 
+- 3x Load AGU
+
 == Gracemont
 - BTB - 5000 entries
 - I-cache 64KB
@@ -950,11 +992,7 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   - VNNI _(Virtual Neural Network Instructions)_
   - AVX _(Advanced Vector Extension)_
 
-== Golden Cove
-- supports these instruction sets:
-  - FMA - extension of SSE _(Streaming SIMD Extension)_
-  - AMX _(Advanced Matrix Extension)_
-  - AVX-512 _(Advanced Vector Extension)_
+
 
 //////////////////////////////////////////////////////////////////////////////////////////*
 //////////////////////////////////////////////////////////////////////////////////////////*
@@ -975,9 +1013,9 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   - #underline[přístupu do paměti]:
     - RAM _(Random Access Memory)_ - náhodný přístup, kamkoli odkudkoli
     - SAM _(Serial Access Memory)_ - přístup sériově, postupně (byte after byte)
-    - speciální 
-      - fronta - lze nahlížet na _front_ a _back_, ne do těla
-      - zásobník - lze nahlížet jen na _top_ zásobníku, ne do těla
+    - speciální:
+      - fronta - lze nahlížet na _front_ a _back_ ale ne do těla
+      - zásobník - lze nahlížet jen na _top_ zásobníku ale ne do těla
       - asociativní
   - #underline[zápis/čtení]:
     - RWM _(Read Write Memory)_ - lze číst i zapisovat 
@@ -987,7 +1025,7 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
       - WOM _(Write Only Memory)_ - lze jen zapisovat (nepraktické, na Linuxu `/dev/null`)
       - WORM _(Write-Once Read-Many times Memory)_ - např. CD-ROM (vypálí se jednou, nejsou přepsatelné, číst lze opakovaně)
   - #underline[elementární buňky:]
-    - DRAM _(Dynamic RAM)_ - náboj v kondenzátor drží bit dat
+    - DRAM _(Dynamic RAM)_ - náboj v kondenzátoru drží bit dat
       - postupně se vybíjí - musí se _refreshnout_, jinak se data ztratí
       - proto název dynamický
     - SRAM _(Static RAM)_ - stav klopného obvodu drží bit dat
@@ -996,12 +1034,12 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
     - PROM - přepálené pojistky _(fuse blowing)_
       - přeplené a nepřepálené pojistky reprezentují log. 0 a log. 1 - jeden bit dat
     - EPROM _(Erasable Programmable ROM)_, EEPROM _(Electrically EPROM)_, Flash Memory
-  - #underline[uchování info po odpojení napájení:]
+  - #underline[uchování dat po odpojení napájení:]
     - _Volatile_ - neuchovají data, musí se nepřetržitě napájet, jsou rychlejší
-      - hlavní operační paměti DRAM _("ramka")_ a SRAM _("cache")_
+      - hlavní operační paměti DRAM _("ramka")_ a SRAM _("cache" paměti)_
     - _Non-Volatile_ - uchovají data i po odpojení, nezávislé, jsou pomalejší
-      - xxROM paměti - pro bootloadery, BIOSy atd.
-      - SSD _(Solid State Drive)_, HDD _(Hard Disk Drive)_ - externí pamět
+      - xxROM paměti - pro bootloadery, BIOSy, Firmware atd.
+      - SSD _(Solid State Drive)_, HDD _(Hard Disk Drive)_ - externí paměti, hlavní uložiště
 
 #pagebreak()
       
@@ -1031,12 +1069,12 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 )
 
 - buňky jsou umístěny ve čtvercové matice (matic je vedle sebe naskládaných více)
-- adresování buňky probíha v dvou krocích
+- adresování buňky probíha v dvou krocích:
   1. vybere se řádek _(ROW)_ buňky pomocí _Row Decoder_
-  - aktivuje vodič (_wordline_) vedoucí z _Row Decoderu_ na daném řádku
+  - aktivuje vodič (_wordline_) daného řádku vedoucího z _Row Decoderu_ 
   2. vybere se sloupec _(COL)_ buňky pomocí _Column Decoder_
   - informace uložena v této buňce (1 nebo 0) se pošle do _I/O bufferu_ přes vodič (_bitline_) vedoucí z _Column Decoderu_
-- rozdělení adresování na dva dekódery (_Row_ a _Column_) znamená, že stačí poloviční počet vodičů pro adresování - např. pro $2^20$ buňek stačí $10$ vodičů - $2^10 * 2^10 = 2^20$
+- rozdělení adresování na dva dekódery (_Row_ a _Column_) znamená, že stačí poloviční počet vodičů pro adresování - např. pro $2^20$ buňek stačí $10$ vodičů - $2^10 dot 2^10 = 2^20$
   - musíme ale zavést dva řídicí signály:
     - _RAS_ (Row Access Strobe) a _CAS_ (Column Access Strobe)
     - proto aby se vědělo jakému dekóderu je adresa určena
@@ -1046,8 +1084,8 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   - adresa je rozdělena na adresu řádku a sloupce
     - pošle se do _address buffer_ jedna po druhé - adresní _multiplexing_
     - _multiplexing_ je kontrolován _RAS_ a _CAS_ řídicími signály
-    - pokud se pošle adr. řádku aktivuje se předtím _RAS_ signál
-    - pokud sloupce tak _CAS_ signál
+    - pokud se pošle adresa řádku aktivuje se předtím _RAS_ signál
+    - pokud adresa sloupce tak _CAS_ signál
     - _address buffer_ pošle (na základě _RAS_ a _CAS_ signálu) částečnou _multiplexovanou_ adresu buď _Row Decoderu_ nebo _Column Decoderu_
     - vyšle se _READ_ řídicí signál, data adresované paměťové buňky se zesílí el. zesilovači a předají do _I/O bufferu_ - výstupní data
 - #underline[princip zápisu] je obdobný čtení z _DRAM_:
@@ -1061,8 +1099,8 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 = 21. Hierarchie paměti, popsat a zakreslit do von Neumann.
 - v počítači se používají různé typy paměti
   - důvody jsou ekonomické, technické a praktické
-    - kdyby byl typ paměti, který je levný, nevolatilní, umožňuje náhodný přístup k datům a je rychlý, nepotřebovalo by se vytvářet tolik typů pamětí - taková technologie však zatím neexistuje
-    - bere se v potaz kompromis mezi cenou, rychlotí a kapacitou
+    - kdyby byl jeden typ paměti, který je levný, nevolatilní, umožňuje náhodný přístup k datům a je rychlý, nepotřebovalo by se vytvářet tolik typů pamětí - taková technologie však zatím neexistuje
+    - bere se v potaz kompromis mezi cenou, rychlostí a kapacitou
 
 #figure(
     grid(columns: (auto, auto), rows: (auto, auto), gutter: 1em,
@@ -1081,7 +1119,7 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 - podle _"H"_ úrovně:
   - _H0_ - registry procesorů, odpovídá rychlostí CPU 
   - _H1_ - _Cache L1_, _SRAM_ - rychlost odpovídá vnitř. sběrnicím _CPU_, kapacita 10s až 100s kB / jádro  
-  - _H2_ - _Cache L2_, _SRAM_ - rychlost odpovídá. 100s kB / jádro
+  - _H2_ - _Cache L2_, _SRAM_ - TODO: 100s kB / jádro
   - _H3_ - _Cache L3_, _SRAM_ - 10s MB
   - _H4_ - _Cache L4_, _SRAM_ - 10s až 100s MB
   - _H5_ - hlavní _operační_ paměť, _DRAM_ - 1s až 100s GB
@@ -1112,7 +1150,7 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   1. generický design - struktura počítače je nezívislá na typu řešené úlohy
   + počítač se programuje osahem paměti
   + strojové instrukce a data jsou uloženy v téže paměti - stejný přístup do paměti 
-    - rozdílné je to u harvardskéhé koncepce - samostatná paměť pro program _(instrukce)_ a data
+    - rozdílné je to u harvardské koncepce - samostatná paměť pro program _(instrukce)_ a data
   + paměť je rozdělena do buňěk stejné velikosti - jejich pořadová čísla jako adresy
   + následujicí krok je závislý na tom předchozím
   + program je sekvence instrukcí, které se sekvenčně vykonají
@@ -1129,7 +1167,7 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
   - má i svou vlastní rychlou paměť pro ukládání výsledku instrukcí _(registry)_
   - insrukční ukazatel _(IP - Instrukction Pointer)_ - někdy jako _PC_ _(Program Counter)_
     - ukazuje na instrukci v paměti, která má být vykonána
-    - pomocí něj _"fetchne"_ insrukci z paměti, vykoná ji
+    - pomocí něj _"fetchne"_ insrukci z paměti a vykoná jí
   #figure(caption: "Princip fungování počítače",image("arch_poc/arch_poc1.png", width: 50%))
     - následně se inkrementuje o délku právě provedené instrukce
   - pokud instrukce potřebuje data z paměti, vyžádá si je stejným způsobem jako instrukce
@@ -1146,9 +1184,9 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 
 - pro vlastnosti viz otázku 21
 - CPU _(Central Processing Unit)_ - sdružené řídicí a výpočetní jednotky
-- paměť - pro program i data
+- paměť - spokečná pro program i data
 - vstup/výstup _(Input/Output)_ - pro externí zařízení
-- sběrnice - sdružené datové a řídicí signály, porpojuje _CPU_, paměť a _I/O_ 
+- sběrnice - sdružené datové a řídicí signály, propojuje _CPU_, paměť a _I/O_ 
 - #underline[výhody]:
   - rozdělení paměťi pro program a data si rozhodne sám programátor
   - řídicí jednotka přistupuje do paměťi pro data i instrukce jednotným způsebem
@@ -1171,7 +1209,7 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
 - výhody:
   - oddělení paměti pro data a program
     - program nemůže přepsat sám sebe
-    - paměti mohou být vytvořeny odličnými technologiemi
+    - paměti mohou být vytvořeny odlišnými technologiemi
       - jiná velikost nejmenší adresovací jednotky
       - např. ROM pro program a RWM pro data
     - dvě sběrnice způsobí výšší propustnost - souběžné přistupování pro data i instrukce
@@ -1203,13 +1241,14 @@ Médium HDD (Hard Disk Drive), na kterém se data ukádají, je feromagnetická 
     - ten je potřebný při obostranném korespondenčním režimu
 
 = 25. Komunikace se semafory a bez semaforů (indikátoru). Nakresli aspoň jedním směrem.
-== Technika nepodmíněný vstup a výstup _(bez semaforu/indikátoru)_
+== Technika nepodmíněného vstupu a výstupu _(bez semaforu/indikátoru)_
 #figure(image("komunikace/image1.png", width: 60%), caption: [Technika nepodméněného vstupu a výstupu _bufferu_])
 - #underline[vstup] _(input)_ - procesor vyšle signál _RD_ (read) 
   - přikáže tím vstupnímu zařízení předat data do procesoru
   - nijak se nekotroluje jestli je periférie připravená (očekává se, že je vždy připravená)
 - #underline[výstup] _(output)_ - procesor vyšle signál _WR_ (write) 
   - výstupní zařízení data z procesoru převezme
+  - nijak se nekontroluje, jetli data opravdu převzala
 - tento způsob je velmi jednoduchý
 - předpokládá neustýlou připravenost periferního zařízení
 #pagebreak()
