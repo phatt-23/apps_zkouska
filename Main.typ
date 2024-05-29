@@ -8,7 +8,9 @@
     "[1 / 1]",
     both: true,
   )
-])))
+  ])),
+  header: align(right)[Zkouškové otázky]
+)
 
 #align(center, 
   text(22pt)[*Architektury počítačů a paralelních systémů*]
@@ -59,7 +61,7 @@
 + Jak funguje počítač a jak se vykonávají skokové instrukce.
 + Popište a nakreslete harvardskou architekturu, popište rozdíly, výhody a nevýhody oproti von Neumann. Na obrázku vyznačte části, které mají a nemají společné. Která architektura je podle vás lepší a proč?
 + Popište a nakreslete architekturu dle von Neumann. Napište jeho vlastnosti, výhody a nevýhody.
-
+#pagebreak()
 = Komunikace
 
 26. Komunikace se semafory a bez semaforů (indikátoru). Nakresli aspoň jedním směrem.
@@ -107,7 +109,7 @@
 - mikroprocesory mohou být vyráběny pro řešení velmi specifických úloh, proto nelze jejich konstrukce a vlastnosti zcela zgeneralizovat - můžeme očekávat velké rozdíly mezi jednotlivými mikroprocesory
 - převážně se používá harvardská koncepce:
   - oddělená paměť pro program a data
-  - možnost použít jiné technologie (ROM, RWM) a nejměnší adresovatelnou jednotku (12, 16, 32)
+  - možnost použít jiné technologie (ROM, RWM) a nejmenší adresovatelnou jednotku (12, 16, 32)
 - procesory jsou obvykle RISC:
   - kvůli jednoduchosti, menší spotřebě energie a menší velikosti
 - typy paměti mikroprocesorů / monotlitických počítačů:
@@ -123,26 +125,34 @@
   - pracovní registry - obvykle jeden, dva 
     - ukládají aktuálně vypracovaná data
     - jsou nějčastějšími operandy strojových instrukcí
-  - _"sctratch-pad"_ registry
+  - _"sctratch-pad"_ registry:
     - pro ukládání nejčastěji používaných dat
     - část strojových instrukcí pracuje přímo s těmito registry
-  - paměť dat _RWM_
+  - paměť dat _RWM:_
     - pro ukládání rozsáhlejších a méně používaných dat
     - instrukční sada nedovoluje krom přesunových instrukcí s touto pamětí pracovat přímo
     - musí se neprve přesunout do pracovních registrů
-- počítač obsahuje také speciální registry
+- počítač obsahuje také speciální registry:
   - instrukční ukazatel _(Instruction Pointer)_ - ukazuje na instrukci v paměti, která se bude vykonávat 
   - instrukční registr - ukládá vykonávanou instrukci
-- zásobník s návratovými adresami
+- zásobník s návratovými adresami:
   - buď je v paměti na vyhrazeném místě nebo jako samostatná paměť typu _LIFO_
   - aby se vědělo kde je vrchol zásobníku je třeba mít _ukazatel na vrchol zásobníku_ (jako registr)
 - zdroje synchronizace mohou být interní a externí:
-  - integrován přímo na čipu - není dobrá stabilita (rozdílná tepota způsobí značné odchylky)
+  - integrován přímo na čipu - není dobrá stabilita (i rozdílná tepota způsobí značné odchýlky)
     - hodí se tam, kde není potřebna vazba na reálný čas
   - externí generátory - často se používájí:
     - krystal (křemenný výbrus) - dobrá stabilita, dražší
     - keramický rezonátor - dobrá stabilita, dražší
     - RC oscilátory - může být nepřesný, levný
+#figure(
+    grid(columns: (auto, auto), rows: (auto, auto), gutter: 0em,
+        [ #image("monolity/image13.png", width: 80%) ],
+        [ #image("monolity/image14.png", width: 80%) ],
+        [ #image("monolity/image15.png", width: 80%) ],
+    ),
+    caption: [Externí zdroje synchronizace - _a)_ externí zdroj, _b)_ oscilátor s _RC_ článkem, _c)_ krystal]
+)
 - počáteční stav _RESET_
   - monolit je sekvenční obvod závislý nejen na instrukcích ale i na stavech a signálech
   - aby počítač spolehlivě spustil program, musí být definován přesný počáteční stav (stav _RESET_)
@@ -152,7 +162,8 @@
   - program může vlivem okolí _"zabloudit"_ - tento problém řeší obvod _WATCHDOG_
     - je to časovač, který je neustále inkrementován nebo dekrementován při běhu počítače
     - přeteční nebo podtečení tohoto časovače způsobí _RESET_
-    - program tedy musí průběžně tento časovač vynulovávat
+    - procesor tedy musí průběžně tento časovač vynulovávat
+    - pokud je ale _"zablouděný"_, tak tuto činnost nedělá $->$ přetečení $->$ _RESET_
   - hlídání rozsahu napětí, ve kterém počítač pracuje:
     - např. počítač funguje jen ve stanoveném rozmezí 3-6V
     - dojde-li k tomu, že napětí napájení stoupne nad nebo klesne pod toto rozmezí $->$ _RESET_
@@ -160,7 +171,7 @@
   - povoluje a zakazuje _interrupts_ - požadavky od periferií pro procesor, aby něco bylo vykonáno
   - definuje způsob obsluhy _interruptů_
   - zjišťuje zdroj a prioritu _interruptů_
-- periférie: #emph[(viz další otázka more)]
+- periférie: #emph[(viz další otázka more dyk)]
   - vstupně-výstupní brány _(I/O gates)_
   - sériové rozhraní _(SPI - Serial Peripheral Interface)_
   - čítače a časovače _(Counter & Timer)_ 
@@ -172,30 +183,32 @@
   
 = 2. Periférie monolitických počítačů - vybrat si a popsat.
 == Vstupní a výstupní brány _(I/O gates)_
-- nejčastější paralelní brána - port
-- lze nastavit jednotlivě vstupní a výstupní piny (vodiče)
-- obvykle 8 pinů - lze pracovat jako jednot. bity nebo celky
+- nejčastějším a nejjednodušším rozhraním je paralelní brána neboli _port_
+  - skupina jednobitových vývodů - mohou nabývat log. 0 a log. 1
+  - většinou je 4-bit nebo 8-bit - předají se naráz (ne sériově)
+  - lze nastavit jednotlivé vývody jako vstupní a výstupní piny (vodiče)
+  - instrukční soubor s nimi pracuje buď jako s jednotlivými bity nebo celky
 - umožňují komunikaci po sériové lince s vnějšími zařízeními
 
-== Seriové rozhraní
+== Sériové rozhraní
 - pro přenášení dat mezi periferními zařízeními a procesorem
 - stačí minimální počet vodičů
 - nízka přenosová rychlost
-- delší časový interval mezi přenášenými daty - třeba data zakódovat a dekódovat (např. checkword u I2C)
+- delší časový interval mezi přenášenými daty - třeba data zakódovat a dekódovat (např. checkword u I2C rádiové komunikace)
 - základní klasifikace komunikace (standardy):
-  - na větší vzdálenosti - RS232 nebo RS485
-  - uvnitř el. zařízení - I2C (Inter Integrated Circuit)
+  - na větší vzdálenosti - RS232 nebo RS485 - mezi řídicím počítačem a podřízenými stanicemi 
+  - uvnitř elektronikého zařízení - I2C (Inter-Integrated Circuit)
 
 == Čítače a časovače
 - čítač - registr o $N$ bitech
-  - čítá vnější události (je inkrementován vnějším signálu dle jeho náběžné nebo sestupné hrany)
+  - čítá vnější události (je inkrementován vnějším signálem dle jeho náběžné nebo sestupné hrany)
   - při jeho přetečení se předá _Interrupt Request_ do _Interrupt Subsystem_ mikropočítače
-  - jeho počíteční hodnota se nastaví programově
-  - je možné ho v libovolné chvíli odpojit a připojit k externímu signálu
+  - jeho počáteční hodnota se nastaví programově
+  - je možné ho v libovolné chvíli od externího signálu odpojit a opět připojit  
 - časovač - čítač, který je inkrementován interním hodinovým signálem
   - lze jim zajistit řízení událostí a chování v reálném čase
   - při přeteční se automaticky předa _Interrupt Request_ 
-  - krom počáteční hodnoty, lze nastavit i předdeličku
+  - krom počáteční hodnot lze nastavit i předdeličku
 
 #figure(
     grid(
@@ -209,9 +222,9 @@
 )
 
 == A/D převodníky
-- fyzikal. veličiny vstupují do MCU v analog. formě (spojité)
-- analog. signál - napětí _(U - Voltage)_, proud _(I - Current)_, odpor _(R - Resistance)_
-- převede do digital. formy
+- fyzikal. veličiny vstupují do mikropočítače v analog. formě (spojité)
+- analog. signály mohou být - napětí _(U - Voltage)_, proud _(I - Current)_, odpor _(R - Resistance)_
+- převede analog. signál do digital. formy
 - základní typy:
   - komparační A/D převodník
   - A/D převodník s pomocí D/A převodem
@@ -219,7 +232,7 @@
   - převodník s RC článkem
 #pagebreak()
 == D/A převodníky
-- převede z digital. formy do analog. formy
+- převede hodnotu z digital. formy do analog. formy
 - typy:
   - PWM - Pulse Width Modulation
   - paralelní převodník
@@ -236,16 +249,16 @@
 
 = 3. Vysvětlete PWM a kde se používá. Obrázek dobrovolný.
 - realizován buď programovou implementací nebo dedikovaným obvodem
-- číslicový signál na výstupu MCU má obvykle 2 konstantní napěťové úrovně
+- číslicový signál na výstupu mikropočítače má obvykle 2 konstantní napěťové úrovně
   - $U_0$ pro logickou 0 a $U_1$ pro logickou 1
-- poměrem času, kdy je výstup na log. 1 a log. 0, můžeme modulovat z dig. signálu signál analogový
+- poměrem časů, kdy je výstup na log. 1 a log. 0, můžeme modulovat z digitální hodnoty signál analogový
   - bude roven střední hodnotě napětí za dobu jedné dané periody
-  - čas $T_0$ - U je na úrovni $U_0$
-  - čas $T_1$ - U je na úrovni $U_1$
+  - čas $T_0$ - U je na úrovni $U_0$ neboli napětí reprezentujicí log. 0
+  - čas $T_1$ - U je na úrovni $U_1$ neboli napětí reprezentujicí log. 1
   - perioda - $T = T_0 + T_1$ 
-- střední hodnota napětí, $U#sub[PWM]$, je vypočitána: 
-  $ U#sub[PWM] = U_0 + (U_1 - U_0) * T_1/(T_0 + T_1) $
-- výstup se zesílí výsupním zesilovačem
+- střední hodnota napětí, $U#sub[PWM]$, je vypočitána vztahem: 
+  $ U#sub[PWM] = U_0 + (U_1 - U_0) dot T_1/(T_0 + T_1) $
+- výstup se zesílí výstupním zesilovačem
 - pro převod PWM pulsu na analog. veličinu se používá RC článek
   - časová konstanta RC musí být výrazně větší než $T$ (toto způsobuje zpomalení)
 - rozlišení výstup. signálu zavisí na počtu bitů komparovaných registrů (_PWM Registr_ a _Čítač_)
@@ -271,7 +284,7 @@
       - $U#sub[INP]$ se chytne k nějakému komparátoru stejného nebo podobného napětí
       - vybraný komparátor bude mít na výstupu 1 a ostatní 0 
       - kóder převede tento signál do binarního formátu
-    - velmi rychlé - více komparátoru roste přesnost
+    - velmi rychlé - s více komparátory roste přesnost
     
 #figure(
   caption: "Komparační A/D převodník - odporová dělička",
@@ -285,7 +298,7 @@
         - je pomalý - vhodný pro měření pomalu měnicích se veličin - teplota, vlhkost
       - aproximační:
         - ref. hodnota je na počátku ve středě mezi minimem a maximem měřitelného rozsahu napětí
-        - podle výsledku komparátoru měřené hodnoty s ref. hodnotou se vždy posune ref. hodnotu nahoru nebo dolů o polovinu zbytku intervalu
+        - podle výsledku komparátoru měřené hodnoty s ref. hodnotou se vždy posune ref. hodnota nahoru nebo dolů o polovinu zbytku intervalu
         - složitost algoritmu je $O(log_2n)$, kde $n$ je počet měřitelných hodnot -- jde o binární vyhledávání
 
 #figure(
@@ -306,15 +319,15 @@
 
     
 - *A/D převodník s RC článkem:*
-    - na vstupu měří odpor $R#sub[INP]$ ne napětí - např. tenzometr
+    - na vstupu měří odpor $R#sub[INP]$ ne napětí - např. tenzometr, termistor
     - princip:
       - necháme nabíjet kondenzátor přes ref. odpor $R#sub[REF]$ dokud $U_C$ v kondenzátoru  nedosáhne $U#sub[CC]$
       - teď necháme konden. $C$ vybíjet 
         - přes stejný odpor dokud $U$ v konden. neklesne na hodnotu $U#sub[KOMP]$
-        - přičémž měříme čas vybíjení $T#sub[REF]$
-      - to samé uděláme s měřenýn odporem $R#sub[INP]$ - získáme tím čas vybíjení $T#sub[INP]$ (na obrázku je $T_s$)
+        - přičemž měříme čas vybíjení $T#sub[REF]$
+      - to samé uděláme s měřeným odporem $R#sub[INP]$ - získáme tím čas vybíjení $T#sub[INP]$ (na obrázku $T_s$)
       - hodnotu vstupního napětí, $R#sub[INP]$, získáme vztahem:
-      $ R#sub[INP] = R#sub[REF] dot (T#sub[INP])/(T#sub[REF]) $
+      $ R#sub[INP] = R#sub[REF] dot (T#sub[INP])/(T#sub[REF]) #text[ protože ] (R#sub[INP])/(R#sub[REF]) = (T#sub[INP])/(T#sub[REF]) $
       
 
 #figure(
@@ -325,7 +338,7 @@
         [ #image("monolity/image6.png", width: 100%) ],
         [ #image("monolity/image7.png", width: 100%) ],
     ),
-    caption: "Integrační ADC - schéma obvodu, znázornění růstu " + $U_1$ + " a\n" + "A/D převodník s RC článkem, znázornění napětí v kondenzátoru v čase"
+    caption: [Integrační _ADC_ - schéma obvodu, znázornění růstu $U_1$ \ & _ADC_ s _RC_ článkem, znázornění napětí v kondenzátoru v čase]
 )
 
 #pagebreak()
@@ -334,14 +347,22 @@
   - *PWM* (viz otázka na PWM)
   - *paralelní převodník*
     - je rychlý
-    - založeny na přímém převodu dig. hodnoty na analog. veličinu
+    - založeny na přímém převodu digitální hodnoty na analog. veličinu
     - základem je odporová síť, na níž se vytvářejí částečné výstupní proudy:
       - váhově řazené hodnoty - rezistory s odpory v poměrech 1 : 2 : 4 : ... : 64 : 128
       - R-2R - stačí rezistory s odpory R a 2R
+  - digitalní hodnota přepína přepínače pod 2R rezisotory
+  - výstupem je el. proud $I_A$ a jeho komplementární (znegovaný) proud $I_B$
 
 #figure(
-  caption: "Paralelní D/A převodník řešený pomocí R-2R",
-  image("monolity/image3.png", width: 39%)
+    grid(
+        columns: (auto, auto),
+        rows:    (auto, auto),
+        gutter: 1em,
+        [ #image("monolity/image3.png", width: 100%) ],
+        [ #image("monolity/image8.png", width: 100%) ],
+    ),
+    caption: [Paralelní D/A převodník řešený pomocí R-2R \ & Znázornění _START_ a _STOP_ řídicích signálů na _SCL_ a _SDA_ vodičích]
 )
 
 = 5. I2C - co to je, jak funguje, kde se používá a naskreslit.
@@ -355,20 +376,17 @@
   - SCL _(Serial Clock Line)_ - pro synchronizaci přenosu 
 - funguje ve formě přenosu dat mezi _"Master"_ a _"Slave"_ zařizeními
   - *_Master_* - zodpovědný za řízení komunikace, inicijuje přenos
-  - *_Slave_* - řízení od _"Master"_ přijímá a vykoná (vykoná funkci / předá zpět data)
-- praxe:
+  - *_Slave_* - řízení od _"Master"_ přijímá a vykoná (vykoná funkci / poskytuje data)
+- princip fungování:
   - v klidovém stavu obě na log. 1
-  - komunikace se zahajuje řídicím signálem START - přivedením SDA na 0, hned po ní SCL na 0 
-  - ukončí se řídicím signálem STOP - SCL na log. 1 a hned po ní SDA na log. 1
-    
-#figure(caption: "Znázornění START a STOP řídicích signálů na SCL a SDA vodičích", image("monolity/image8.png", width: 40%) )
-
+  - komunikace se zahajuje řídicím signálem _START_ - přivedením _SDA_ na 0, hned po ní _SCL_ na 0 
+  - ukončí se řídicím signálem _STOP_ - _SCL_ na log. 1 a hned po ní SDA na log. 1  
   - musíme na začátku komunikace adresovat _"Slave"_ zařízení, se kterým chceme komunikovat, a zadat směr komunikace - zda chceme číst _(RD)_ od nebo zapisovat _(WR)_ do _"Slave"_ zařízení:
-    - po SDA předáme adresu zařízení s řídicím bitem _RD_ nebo _WR_ jako 1 byte dat 
+    - po _SDA_ předáme adresu zařízení s řídicím bitem _RD_ nebo _WR_ jako 1 byte dat 
       - 7 bitů slouží pro adresování zařízení a 1 bit (LSB) pro směr komunikace
-      - pokud adresované zařízení zaznamená, vyšle ACK (log. 0) po datovém vodiči
-  - zápis/write - posílame byte postupně po bitech, po každém bytu dat musí _"Slave"_ vyslat ACK 
-  - čtení/read - očekaváme data od zařízení, po každém bytu, který přijmem, vyšlem ACK
+      - pokud adresované zařízení zaznamená, vyšle signál _ACK_ (log. 0) po datovém vodiči
+  - zápis/write - posílame byte postupně po bitech - po každém bytu dat musí _"Slave"_ vyslat _ACK_ 
+  - čtení/read - očekaváme data od zařízení - po každém bytu, který přijmem, vyšlem _ACK_
   
 
   
@@ -378,13 +396,12 @@
 #link("https://datasheets.raspberrypi.com/rp2040/rp2040-product-brief.pdf")[[specifikace přímo od Raspberry Pi]]\
 #link("https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf")[[obrázek monolitu RP2040 přímo od Raspberry Pi]]
 #figure(
-  caption: [Schéma mikropočítače / mikroprocesoru / monolitu / monolitckého počítače RP2040],
+  caption: [Schéma mikropočítače / mikroprocesoru / monolitu / monolitického počítače RP2040],
   image("monolity/image10.png", width: 80%)
 )
-- dual ARM Cortex-M0+
-  - 2 cores/jádra
+- dual ARM Cortex-M0+ - 2 jádra
 - SRAM - 264kB, 6 na sobě nezávislých bank 
-- až 16Mb pro off-chip Flash pamět pro program - přes QSPI port
+- až 16MB pro off-chip Flash pamět s programem - přes QSPI port
 - DMA řadič
 - fully connected AHB _(Advanced High-performance Bus)_ 
   - propojovací síť všech komponent s procesorem
@@ -420,22 +437,22 @@
 + Čtení CD - princip a obrázek.
 
 = 7. Fyzikální popis HDD - čtení, zápis a nákres. Vysvětlit podélný a kolmý zápis.
-- médium HDD _(Hard Disk Drive)_, na kterém se data ukádají, je feromagnetická vrstva nanesena na plotnu disku (většinou sklo nebo / slitina hliníku)
-- pracuje s magnetickým záznamem
+- médium HDD _(Hard Disk Drive)_, na kterém se data ukládají, je feromagnetická vrstva nanesena na plotnu disku (většinou ze skla / slitiny hliníku)
+- pracuje s magnetickým záznamem - tím zaznamená data
 - feromagnetická vrstva dokáže uchovat magnetická pole
 - záznamová/zapisovací hlava - jádro s úzkou štěrbinou (1μm) a navlečenou cívkou 
   - vrstva feromagnetická je trvale zmagnetována záznamovou hlavou
   - v bodu dotyku hlav (zapisovací a čtecí) nebo v nepatrné vzdálenosti s médiem je štěrbina 
 == Zápis na disk  
-  - při průchodu el. proudu proudí magnet. tok jádrem 
+  - při průchodu el. proudu cívkou proudí magnet. tok jádrem 
   - jádro v je části, kde je nejblíže záznamové vrstvě, přerušeno úzkou štěrbinou vyplněnou nemagnetickou látkou (nejčastěji bronz) nebo "ničím" (vzduchem)
   - v místě štěrbiny dochází k magnatickému stínění jádra a následnému vychýlení indukčních čar z jádra cívky do feromagnetické vrstvy disku
   - měněním směru el. proudu v cívce se mění směr magnet. toku jádrem i štěrbinou a tím smysl magnetizace aktivní vrstvy
 == Čtení z disku
-  - na aktiv. vrstvě jsou místa magnetizované tím či oním směrem - mezi nimi jsou místa magnetického přechodu - tzv. _"magnetiké rezervace"_
-  - právě ony představují zapsanou informaci
   - při čtení se disk pohybuje stejným směrem konstantní rychlostí
-  - změny mag. pole na feromag. vrstvě způsobují napěťové impulsy na svorkách cívky čtecí hlavy
+  - na aktivní feromagnetické vrstvě jsou místa magnetizované tím či oním směrem - mezi nimi jsou místa magnetického přechodu - tzv. _"magnetiké rezervace"_
+    - právě ony představují zapsanou informaci
+    - změny mag. pole na feromag. vrstvě způsobují napěťové impulsy na svorkách cívky čtecí hlavy
   - impulsy jsou nádledovně zesíleny elektrickými zesilovači
 
 #figure(
@@ -466,8 +483,8 @@
 - části pevného disku:
   - plotny disku
   - hlavy pro čtení a zápis
-  - pohon hlav
   - vzduchové filtry
+  - pohon hlav
   - pohon ploten disku
   - řídící deska (deska s elektronikou)
   - kabely a konektory
@@ -475,13 +492,13 @@
 #pagebreak()
 
 == Geometrie disku
-- uspořádání prostoru na disku - počet hlav, cylindrů a stop
+- uspořádání prostoru na disku - počet hlav (zapisovací a čtecí), cylindrů a stop
 - data jsou na disk ukládána v bytech
-- byty jsou uspořádány do skupin po 512 bytech (nové 4KiB) zvané sektory
+  - byty jsou uspořádány do skupin po 512 bytech (nové 4KiB) zvané sektory
 - sektor je nejmenší jednotka dat, kterou lze na disk zapsat nebo z disku přečíst
-- sektory jsou seskupeny do stop 
-- stopy jsou uspořádány do skupin zvaných cylindry nebo válce
-- předpokladem je, že jeden disk má nejméně dva povrchy
+  - sektory jsou seskupeny do stop 
+    - stopy jsou uspořádány do skupin zvaných cylindry nebo válce
+- předpokladem je, že jeden disk má nejméně dva povrchy (dolní a horní plocha plotny)
 - systém adresuje sektory na pevném disku pomocí prostorové matice cylindrů, hlav a sektorů
 
 #figure(
@@ -490,34 +507,32 @@
         rows:    (auto, auto),
         gutter: 1em,
         [ #image("disky/image2.png", width: 120%) ],
-        [ #image("disky/image3.png", width: 130%) ],
+        [ #image("disky/image3.png", width: 90%) ],
     ),
-    caption: "Geometrie pevného disku a popis plotna"
+    caption: "Geometrie pevného disku a popis plotny"
 )
 === Stopy 
 - každá strana každé plotny je rozdělena na soustředné stopy (kružnice)
-- protože povrchů i hlav je několik, je při jedné poloze hlav přístupná na každém povrchu jedna stopa, stačí elektronicky přepínat hlavy
+- protože povrchů i hlav je několik, je při jedné poloze hlav přístupná na každém povrchu jedna stopa - pro vybrání jedné stopy stačí elektronicky přepínat hlavy
 
 === Cylindry
 - pevné disky mají více ploten (disků), umístěných nad sebou, otáčejících se stejnou rychlostí
 - každá plotna má dvě strany (povrchy), na které je možno data ukládat
-- diskové hlavy nemohou být vystavovány nezávisle (pohybovány společným mechanismem)
+- diskové hlavy nemohou být vystavovány nezávisle (jsou pohybovány společným mechanismem)
 - souhrn stop v jedné poloze hlav se nazývá cylindr (válec)
 - počet stop na jednom povrchu je totožný s počtem cylindrů
 - z tohoto důvodu většina výrobců neuvádí počet stop, ale počet cylindrů
 
 === Sektory 
-- jedna stopa je příliš velkou jednotku pro ukládání dat (100kB či více bytů dat)
+- jedna stopa je příliš velkou jednotku pro ukládání dat (100KiB či více bytů dat)
   - stopa se rozděluje na několik očíslovaných částí nazývané sektory
-- můžeme si je představit jako výseče na plotně
-- nejmenší adresovatelná jednotka na disku
-- její velikost určí řadič při formátování disku
-- na rozdíl od hlav nebo cylindrů, číslujeme od jedničky
+  - můžeme si je představit jako výseče na plotně
+  - je to nejmenší adresovatelná jednotka na disku - na rozdíl od hlav nebo cylindrů, číslujeme od 1
+  - její velikost určí řadič při formátování disku
 - na začátku sektoru je hlavička, identifikující začátek sektoru a obsahující jeho číslo
-- konec - tzv. zakončení sektoru 
-  - pro ukládání kontrolního součtu _(ECC - Error Correcting Code)_ 
-    - slouží ke kontrole integrity uložených dat
-- jednotlivé sektory se oddělují mezisektorovými mezerami - není zde možné uložit data
+- konec - tzv. zakončení sektoru - pro ukládání kontrolního součtu _(ECC - Error Correcting Code)_ 
+  - slouží ke kontrole integrity uložených dat
+- jednotlivé sektory se oddělují mezisektorovými mezerami - zde není možné data uložit 
 - proces čtení sektoru se skládá ze dvou kroků:
   - čtecí a zápisová hlava musí přemístit nad požadovanou stopu
   - potom se čeká, až se disk natočí tak, že požadovaný sektor je pod hlavou, a pak probíhá čtení
@@ -525,14 +540,17 @@
 - nejrychleji se tedy čtou soubory, jejichž sektory jsou všechny na stejné stopě a stopy jsou umístěny nad sebou v jednom cylindru
 
 = 9. Čtení CD - princip a obrázek.
+- jako materiál CDčka se používá polykarbonát, strana se záznamem je pokryta reflexní vrstvou a ochranným lakem
+  - záznam je v podobě pitů (prohlubně) a polí (ostrůvky) na disku 
 - čtení zaznamenaných dat probíhá způsobem, kdy laser v přehrávači CD snímá z povrchu disku zaznamenaný vzor
-- laser je umístěn rovnoběžně s povrchem disku
-- paprsek je na disk odrážen zrcadlem přes dvě čočky
-  - lze velmi úzce zaostřit na malé plochy disku CD-ROM
-- fotodetektor pak měří intenzitu odraženého světla
-- laser nemůže poškodit nosič a na něm uložená data
-- při čtení se paprsek odráží od lesklého povrchu disku CD-ROM a nijak ho nepoškodí
-- mechanismus laseru je od disku asi jeden milimetr
+- mechanika CD:
+  - laser je umístěn rovnoběžně s povrchem disku
+  - paprsek je na disk odrážen zrcadlem přes dvě čočky
+    - lze velmi úzce zaostřit na malé plochy disku CD-ROM
+  - fotodetektor pak měří intenzitu odraženého světla
+  - laser nemůže poškodit nosič a na něm uložená data
+  - při čtení se paprsek odráží od lesklého povrchu disku CD-ROM a nijak ho nepoškodí
+  - mechanismus laseru je od disku asi jeden milimetr
 
 #figure(
   caption: "CD mechanika - princip zápisu a čtení",
@@ -541,13 +559,13 @@
 
 - čtení dat z CD média probíhá za pomocí laserové diody
   - emituje infračervený laserový paprsek směrem k pohyblivému zrcátku
-  - na čtenou stopu přesune servomotor zrcátko na základě příkazů z mikroprocesoru
+  - čtenou stopu přesune servomotor pod zrcátko na základě příkazů z mikroprocesoru
   - po dopadu paprsku na jamky a pevniny, resp. pity a pole, se světlo láme a odráží zpátky
   - dále je zaostřováno čočkou, nacházející se pod médiem
   - od čočky světlo prochází pohyblivým zrcátkem - reflexní zrcadlo
   - odražené světlo dopadá na fotocitlivý senzor - fotodioda
     - převádí světelné impulsy na elektrické
-    - samotné elektrické impulsy jsou dekódovány mikroprocesorem a předány do počítače ve formě dat
+    - samotné elektrické impulsy jsou dekódovány mikroprocesorem a předány do počítače ve formě dat v binárním formátu
 
 //////////////////////////////////////////////////////////////////////////////////////////*
 //////////////////////////////////////////////////////////////////////////////////////////*
@@ -574,23 +592,29 @@
 
 = 9. Popište a nakreslete technologii LCD - výhody, nevýhody, rozdíl mezi pasivním a aktivním.
 
+- LCD - _Liquid Crystal Display_
 - používá tekuté krystaly k zobrazení jednotlivých pixelů
-- v základě jsou dvojího typu: TN a IPS
+- v základě jsou dvojího typu: 
+  - TN-TFT - _Twisted-Nematic Thin-Film-Transistor_
+  - IPS - _In-Place-Switching_
 
-== Princip TN _(Twisted Nematic)_
+== Princip TN-TFT LCD _(Twisted-Nematic Thin-Film-Transistor LCD)_
   1. světlo projde polarizačním filtrem a polarizuje se
-  + projde vrstvami tekutých krystalů - světlo se otočí o 90°
+  + projde vrstvami tekutých krystalů (uspořádaných do šroubovice) - světlo se otočí o 90°
   + projde druhým polarizačním filtrem (které je otočené o 90° proti prvnímu)
   - klidový režim (bez napětí) - propouští světlo
-  - přivede-li se napětí, krystalická struktura se zorientuje podle směru toku proudu
+  - přivede-li se napětí, krystalická struktura (šroubovice) se zorientuje podle směru toku proudu
+    - světlo projde prvnímpolarizačním filtrem, neotočí se $->$ je definitivně zablokováno
+    - střídáním proudu lze určit intenzitu propouštěného světla
   - nutno podsvítit bílým světlem (elektroluminiscenční výbojky, LED, OLED)
   - vrstva krystalů je rozdělená na malé buňky stejné velikosti, tvořící pixely
   
-== Princip IPS _(In-Place Switching)_
+== Princip IPS LCD _(In-Place-Switching LCD)_
   - podobné TN
   - krystaly jsou uspořádány v rovině
   - elektrody jsou po obou stranách buňky v jedné vrstvě
   - přivede-li se napětí, krystaly se začnou otáčet ve směru elek. proudu - otočení celé roviny krystalů
+    - tím otočí i světlo, které jím procházelo, a propustí se druhým polarizačním filtrem
   - klidový stav - světlo neprochází přes 2. pol. filtr - "nesvítí"
   
 #figure(
@@ -601,13 +625,13 @@
         [ #image("zob_jednot/image1.png", width: 110%) ],
         [ #image("zob_jednot/image2.png") ],
     ),
-    caption: "Princip činnosti TN a IPS displeje"
+    caption: [Princip činnosti _TN-TFT LCD_ a _IPS LCD_ displeje]
 )
 
 #pagebreak()
   
 == Barevné LCD
-  - každý pixel se skládá ze 3 menších bodů obsahující R, G, B filtr
+  - každý pixel se skládá ze 3 menších bodů (subpixelů) obsahující Red, Green, Blue filtr
   - propouštěním světla do barevných filtrů a složením barev dostaneme výslednou barvu pixelu
 
 #figure(
@@ -615,27 +639,27 @@
   image("zob_jednot/image3.png", width: 50%)
 )
 
-== Pasivní LCD
+== Pasivní matice LCD
   - obsahuje mřížku vodičů, body se nacházejí na průsečících mřížky
   - při vyšším počtu bodů narůstá potřebné napětí → rozostřený obraz, velká doba odezvy (3 FPS) nevhodné pro hry, filmy, televizi atd.
+    - z jediného rosvícenéhpo bodu se rozbíhají postupně slábnoucí vertikální a horiznontální čáry
   - používá se v zařízeních s malým displejem (hodinky)
   
-== Aktivní LCD
-  - každý průsečík v matici obsahuje tranzistor nebo diodu - řeší řídicí činnost daného bodu
-  - lze rychle a přesně ovládat svítivost každého bodu
-  - TFT _(Thin Film Transistor)_ izolují jeden bod od ostatních
+== Aktivní matice LCD
+  - každý průsečík v matici obsahuje svůj tranzistor nebo diodu - řeší řídicí činnost daného bodu
+  - pomocí tranzistoru ve spolupráci s kondenzátorem lze rychle a přesně ovládat svítivost $forall$ bodu
+  - TF _(Thin Film)_ tranzistory izolují jeden bod od ostatních - eliminace "čár" na pasivním LCD
 
 #figure(
     grid(
         columns: (auto, auto),
         rows:    (auto, auto),
         gutter: 1em,
-        [ #image("zob_jednot/image4.png", width: 70%) ],
+        [ #image("zob_jednot/image4.png", width: 65%) ],
         [ #image("zob_jednot/image5.png", width: 120%) ],
     ),
-    caption: "Struktura pasivního a TFT displeje"
+    caption: [Struktura pasivního a _TFT_ (aktivního) displeje]
 )
-
 #grid(
   columns: (auto, auto),
   rows: (auto, auto),
@@ -656,34 +680,51 @@
       - doba odezvy
   ]
 )
-
-
-
-#pagebreak()
-
 = 10. Popište a nakreslete technologii OLED - výhody, nevýhody.
 - hlavním prvkem - organická dioda emitující světlo _(Organic Ligh Emitting Diode)_
-- po přivedení napětí na obě elektrody se začnou eletrony hromadit v org. vrstvy blíže k anodě
-- díry, představující kladné částice, se hromadí na opačné straně blíže ke katodě
-- v organické vrstvě začně docházet ke "srážkám" mezi elektrony a dírami a jejich vzájemné eliminaci doprovázené vyzářením energie ve formě fotonu - *rekombinace*
+- po přivedení napětí na obě elektrody se začnou eletrony hromadit v org. vrstvy blíže k anodě 
+  - anoda přítahuje elektrony
+  - tím vznikají "díry" - kladné částice / absence elektronů - ve _"vrstvě pro přenos děr"_
+- díry představující kladné částice se hromadí na opačné straně blíže ke katodě 
+  - katoda odpuzuje elektrony
+  - tím se ve _"vrstvě pro přenos elektronů"_ hromadí elektrony
+- v organické vrstvě _("emisní vrstvě")_ začně docházet ke "srážkám" mezi elektrony a dírami
+  - elektrony zaplňí "díry"
+  - to způsobí jejich vzájemnou eliminaci - *rekombinace* 
+    - doprovází vyzáření energie ve formě fotonu, které vnímáme jako světlo
+- měněním napětí, které do diody přivádíme, způsobuje změnu jasu diody
+  - čím větší napětí, tím víc vzniká "děr" $->$ vyšší výskyt rekombinace $->$ více vyzářených fotonů
 
 #figure(
-  caption: [Základní struktura OLED diody],
+  caption: [Základní struktura _OLED_ diody],
   image("zob_jednot/image6.png", width: 70%)
 )
 #figure(
-  image("zob_jednot/image7.png", width: 65%),
-  caption: "Princip činnosti organické vrstvy OLED",
+  image("zob_jednot/image7.png", width: 45%),
+  caption: [Princip činnosti organické vrstvy _OLED_]
 )
-
 
 #pagebreak()
 
-== AMOLED vs. PMOLED
+== Barevný OLED
+- skládání jednotlivých pixelů ze tří základních barev
+- je více možnosti složení barev (jak je seskládat):
+#set enum(numbering: "a)")
+  + standardně je naskládat vedle sebe
+  + vertikální uspořádání
+  + vertikální uspořádání s bílou složkou
+#set enum(numbering: "1)")
+
+#figure(
+  caption: [Způsuby naskládání barevných složek jednoho pixelu v _OLED_ displejích],
+  image("zob_jednot/image10.png")
+)
+
+== AMOLED vs. PMOLED _(Active / Pasive Matrix OLED)_
 - stejný princip jako aktivní / pasivní LCD
 - body organizovány do pravoúhlé matice
   - pasivní - každá OLED je aktitována dvěma na sebe kolmými elektrodami, procházejícími celou šířkou a výškou displeje
-  - aktivní - každá OLED aktitována vlastním tranzistorem
+  - aktivní - každá OLED aktitována vlastním tranzistorem _(TFT - Thin Film Transistor)_
 
 #figure(
   caption: [Technologie _OLED_ - pasivní _(PMOLED)_ a aktivní _(AMOLED)_],
@@ -714,16 +755,19 @@
 
 = 11. Popsat E-ink - jaké má barevné rozmezí, výhody a nevýhody.
 - technologii E-ink používají zařízení EPD (Electronic Paper Device)
-  - EPD nepotřebují elektrický proud
+  - EPD nepotřebují elektrický proud pro statické zobrazování
 - inkoust tvořen mikrokapslemi (\~ desítky-stovky µm)
 - částice v kapslích se přitahují k elektrodě s opačnou polaritou
 - roztok - hydrokarbonový olej (díky jeho viskozitě vydrží částice na míste i po odpojení napájení)
-- černé částice jsou z uhlíku -- C
-- bíle z oxidu titaničitého -- TiO#sub[2]
-- obal z oxid křemičitého -- SiO#sub[2] -- a tenké vrstvy polymeru
-- k pohybu částic je potřeba proud \~ desítky nA při napětí 5-15 V
+- "stavba" kapsle:
+  - černé záporné částice jsou z uhlíku -- C
+  - bíle kladná částice z oxidu titaničitého -- TiO#sub[2]
+  - obal z oxid křemičitého -- SiO#sub[2] -- a tenké vrstvy polymeru
+  - jako elektoforetický roztok (elektricky separovatelný) se používá hydrokarbonový olej
+- k pohybu částic je potřeba proud \~desítky nA při napětí 5-15 V
 - pro barvy se používají barevné filtry (stejně jako u LCD)
-  - barevná hloubka - 4096 $((2^4)^3 = 16^3)$
+  - barevná hloubka - je závislá na počtu elektrod na jeden zobrazovací bod
+  - $(2^n)^c$ kde $n$ je počet elektrod a $c$ počet barevných složek (např. $(2^4)3 = 16^3 = 4096$)
 
 #figure(
   caption: [Technologie _E-ink_ - pohled na kapsle ze strany],
