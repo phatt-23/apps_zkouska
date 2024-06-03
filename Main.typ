@@ -43,46 +43,47 @@
 14. Popište na RISC procesoru zřetězené zpracování instrukcí, jaké má chyby a jak se řeší.
 + Popište na RISC procesoru zřetězené zpracování instrukcí a jak nám pomůže predikce skoku.
 + Jaké problémy a hazardy mohou nastat u RISC.
++ Popiš základní konstrukci a vlastnosti mikroprocesoru RISC.
 + Popiš a nakresli schéma RISC procesoru, se kterým ses seznámil.
 
 = CISC
 
-18. Popište a nakreslete jakéhokoli nástupce Intel Pentium Pro, se kterým jsme se seznámili.
+19. Popište a nakreslete jakéhokoli nástupce Intel Pentium Pro, se kterým jsme se seznámili.
 
 = Paměti
 
-19. Rozdělení polovodičových pamětí a jejich popis (klíčová slova a zkratky nestačí).
+20. Rozdělení polovodičových pamětí a jejich popis (klíčová slova a zkratky nestačí).
 + Jak funguje DRAM, nakresli. Napiš stručně historii.
 + Hierarchie paměti, popsat a zakreslit.
 
 = Architektura počítačů
 
-22. Popiš základní konstrukci a vlastnosti počítače.
+23. Popiš základní konstrukci a vlastnosti počítače.
 + Jak funguje počítač a jak se vykonávají skokové instrukce.
 + Popište a nakreslete harvardskou architekturu, popište rozdíly, výhody a nevýhody oproti von Neumann. Na obrázku vyznačte části, které mají a nemají společné. Která architektura je podle vás lepší a proč?
 + Popište a nakreslete architekturu dle von Neumann. Napište jeho vlastnosti, výhody a nevýhody.
 #pagebreak()
 = Komunikace
 
-26. Komunikace se semafory a bez semaforů (indikátoru). Nakresli aspoň jedním směrem.
+27. Komunikace se semafory a bez semaforů (indikátoru). Nakresli aspoň jedním směrem.
 + Přenos dat použitím V/V brány s bufferem. Nakreslit obrázek komunikace jedním směrem a jak se liší komunikace druhým směrem. V jakých periferiích se používá.
 + Popiš DMA blok a nakresli schéma DMA řadič v architekuře dle von~Neumanna.
 
 = Assembly x86
 
-29. Jak adresujeme na úrovni strojového kódu - příklad. 
+30. Jak adresujeme na úrovni strojového kódu - příklad. 
 + Podmíněné a nepodmíněné skoky v strojovém kódu.
 + Jak řešíme v Assembly x86 podmínky - co jím musí předcházet. Jaký je vztah mezi tím, co je předchází, a tou podminkou. Kde a proč záleží na datových typech.
 
 = CUDA
 
-32. Princip programování CUDA - jak, kde, kdy se přesouvají data při výpočtu.
+33. Princip programování CUDA - jak, kde, kdy se přesouvají data při výpočtu.
 + Jaké je C/C++ rozšíření CUDA a jak to využije programátor. Jak si programátor organizuje výpočet. K čemu je mřížka. Nákres dobrovolný.
 + Čemu by se měl programátor vyhnout a jak CUDA funguje.
 
 = Paralelní systémy
 
-33. Vysvětlit Amdahlův zákon a jak bychom se podle něj rozhodovali.
+36. Vysvětlit Amdahlův zákon a jak bychom se podle něj rozhodovali.
 + Charakterizjte komunikační modely paralelních systémů.
 + Charakterizujte Flynnovu taxonomii paralelních systémů.
 
@@ -586,12 +587,12 @@
 ])
 
 = Otázky:
-9. Popište a nakreslete technologii LCD - výhody, nevýhody, rozdíl mezi pasivním a aktivním.
+10. Popište a nakreslete technologii LCD - výhody, nevýhody, rozdíl mezi pasivním a aktivním.
 + Popište a nakreslete technologii OLED - výhody, nevýhody.
 + Popsat E-ink - jaké má barevné rozmezí, výhody a nevýhody.
 + Vybrat která zobrazovací jednotka je podle tebe technicky nejzajimavější a proč (OLED, LCD, E-ink).
 
-= 9. Popište a nakreslete technologii LCD - výhody, nevýhody, rozdíl mezi pasivním a aktivním.
+= 10. Popište a nakreslete technologii LCD - výhody, nevýhody, rozdíl mezi pasivním a aktivním.
 
 - LCD - _Liquid Crystal Display_
 - používá tekuté krystaly k zobrazení jednotlivých pixelů
@@ -681,7 +682,7 @@
       - doba odezvy
   ]
 )
-= 10. Popište a nakreslete technologii OLED - výhody, nevýhody.
+= 11. Popište a nakreslete technologii OLED - výhody, nevýhody.
 - hlavním prvkem - organická dioda emitující světlo _(Organic Ligh Emitting Diode)_
 - po přivedení napětí na obě elektrody se začnou eletrony hromadit v org. vrstvy blíže k anodě 
   - anoda přítahuje elektrony
@@ -754,7 +755,7 @@
 
 #pagebreak()
 
-= 11. Popsat E-ink - jaké má barevné rozmezí, výhody a nevýhody.
+= 12. Popsat E-ink - jaké má barevné rozmezí, výhody a nevýhody.
 - technologii E-ink používají zařízení EPD (Electronic Paper Device)
   - EPD nepotřebují elektrický proud pro statické zobrazování
 - inkoust tvořen mikrokapslemi (\~ desítky-stovky µm)
@@ -799,7 +800,7 @@
   ]
 )
 
-= 12. Vybrat která zobrazovací jednotka je podle tebe technicky nejzajimavější a proč (OLED, LCD, E-ink).
+= 13. Vybrat která zobrazovací jednotka je podle tebe technicky nejzajimavější a proč (OLED, LCD, E-ink).
 - viz předchozí otázky
 
 //////////////////////////////////////////////////////////////////////////////////////////*
@@ -812,14 +813,14 @@
 #align(center, text(24pt)[*RISC*])
 
 = Otázky:
-13. Popište na RISC procesoru zřetězené zpracování instrukcí, jaké má chyby a jak se řeší.
+14. Popište na RISC procesoru zřetězené zpracování instrukcí, jaké má chyby a jak se řeší.
 + Popište na RISC procesoru zřetězené zpracování instrukcí a jak nám pomůže predikce skoku.
 + Jaké problémy a hazardy mohou nastat u RISC.
 + Popiš základní konstrukci a vlastnosti mikroprocesoru RISC.
 + Popiš a nakresli schéma RISC procesoru, se kterým ses seznámil.
 
 
-= 13. Popište na RISC procesoru zřetězené zpracování instrukcí, jaké má chyby a jak se řeší.
+= 14. Popište na RISC procesoru zřetězené zpracování instrukcí, jaké má chyby a jak se řeší.
 - procesor je sekvenční obvod 
   - vstup - instrukce a data z paměti
   - výstup - výsledky uloženy do paměti
@@ -865,7 +866,7 @@
 
 #pagebreak()
       
-= 14. Popište na RISC procesoru zřetězené zpracování instrukcí a jak nám pomůže predikce skoku.
+= 15. Popište na RISC procesoru zřetězené zpracování instrukcí a jak nám pomůže predikce skoku.
 - viz 13. otázku - jak funguje zřetězené zpracování instrukcí
 - typy řešení predikcí skoků - _jednobitová, dvoubitová, BTB_:
   - _jednobitová_ predikce:
@@ -896,10 +897,10 @@
       
 #pagebreak()
 
-= 15. Jaké problémy a hazardy mohou nastat u RISC.
+= 16. Jaké problémy a hazardy mohou nastat u RISC.
 - viz předchozí otázky - popsaný datové a strukturální hazardy, problematika zpracování podmíněných skoků
 
-= 16. Popiš základní konstrukci a vlastnosti mikroprocesoru RISC.
+= 17. Popiš základní konstrukci a vlastnosti mikroprocesoru RISC.
 - mají malý instrukční soubor
 - vývojová větev RISC vyvinula řadu zásadních kritérií, charakterizujících metodiku návrhu nejen procesoru, ale i celého počítače
 - procesoru se má přenechat jenom ta činnost, která je nezbytně nutná
@@ -930,7 +931,7 @@
 
 #pagebreak()
 
-= 17. Popiš a nakresli schéma RISC procesoru, se kterým ses seznámil.
+= 18. Popiš a nakresli schéma RISC procesoru, se kterým ses seznámil.
 == ARM Cortex A77
 - frekvence 3 GHz
 - ARM v8-A architektura (harvardká arch.)
@@ -959,10 +960,10 @@
   caption: "Architektura ARM A77",
   image("RISC/image7.png", width: 100%)
 )
-#figure(
-  caption: "mrtka",
-  image("RISC/image1.png", width: 50%)
-)  
+// #figure(
+//   caption: "mrtka",
+//   image("RISC/image1.png", width: 50%)
+// )  
 
 //////////////////////////////////////////////////////////////////////////////////////////*
 //////////////////////////////////////////////////////////////////////////////////////////*
@@ -975,9 +976,9 @@
 #align(center, text(24pt)[*CISC*])
 
 = Otázky:
-18. Popište a nakreslete jakéhokoli nástupce Intel Pentium Pro, se kterým jsme se seznámili.
+19. Popište a nakreslete jakéhokoli nástupce Intel Pentium Pro, se kterým jsme se seznámili.
 
-= 18. Popište a nakreslete jakéhokoli nástupce Intel Pentium Pro, se kterým jsme se seznámili.
+= 19. Popište a nakreslete jakéhokoli nástupce Intel Pentium Pro, se kterým jsme se seznámili.
 == Intel Core i9-12900K _(2021)_
 - 12-tá generace - codename _"Alder Lake"_
   - hybridní arch. _"Alder Lake"_ - na jednom čipu dvě rozdílné arch. jader
@@ -1065,11 +1066,11 @@
 #align(center, text(24pt)[*Paměti*])
 
 = Otázky:
-19. Rozdělení polovodičových pamětí a jejich popis (klíčová slova a zkratky nestačí).
+20. Rozdělení polovodičových pamětí a jejich popis (klíčová slova a zkratky nestačí).
 + Jak funguje DRAM, nakresli. Napiš stručně historii.
 + Hierarchie paměti, popsat a zakreslit.
 
-= 19. Rozdělení polovodičových pamětí a jejich popis (klíčová slova a zkratky nestačí).
+= 20. Rozdělení polovodičových pamětí a jejich popis (klíčová slova a zkratky nestačí).
 - dělení podle typu:
   - #underline[přístupu do paměti]:
     - RAM _(Random Access Memory)_ - náhodný přístup, kamkoli odkudkoli
@@ -1105,7 +1106,7 @@
 
 #pagebreak()
       
-= 20. Jak funguje DRAM, nakresli. Napiš stručně historii.
+= 21. Jak funguje DRAM, nakresli. Napiš stručně historii.
 == Stručná historie
 - 50. léta 20. st. - bubnové paměti, feritová jádra
 - 70. léta 20. st. - bublinové paměti
@@ -1160,7 +1161,7 @@
 #pagebreak()
   
 
-= 21. Hierarchie paměti, popsat a zakreslit do von Neumann.
+= 22. Hierarchie paměti, popsat a zakreslit do von Neumann.
 - v počítači se používají různé typy paměti
   - důvody jsou ekonomické, technické a praktické
     - kdyby existoval typ paměti, který je levný, nevolatilní, umožňuje náhodný přístup k datům a je rychlý, nepotřebovalo by se vytvářet tolik typů pamětí - taková technologie však zatím neexistuje
@@ -1202,12 +1203,12 @@
 #align(center, text(24pt)[*Architektura počítačů*])
 
 = Otázky:
-21. Popiš základní konstrukci a vlastnosti počítače.
+23. Popiš základní konstrukci a vlastnosti počítače.
 + Jak funguje počítač a jak se vykonávají skokové instrukce.
 + Popište a nakreslete architekturu dle von Neumann. Napište jeho vlastnosti, výhody a nevýhody.
 + Popište a nakreslete harvardskou architekturu, popište rozdíly, výhody a nevýhody oproti von Neumann. Na obrázku vyznačte části, které mají a nemají společné. Která architektura je podle vás lepší a proč?
 
-= 21. Popiš základní konstrukci a vlastnosti počítače.
+= 23. Popiš základní konstrukci a vlastnosti počítače.
 - všechny počítače pochází z von Neumannovy základní koncepce - počítač je řízen obsahem paměti
   - představen v roce 1945 - EDVAC _(Electronic Discrete Variable Automatic Computer)_
 - von Neumann stanovil kritéria a principy, které musí počítač splňovat:
@@ -1223,7 +1224,7 @@
   + počítač se skládá z řídicí a aritmeticko-logické jednotky (dnes jako celek _CPU_ - centrální procesní jednotka), paměti a _I/O_ jednotek
 
   
-= 22. Jak funguje počítač a jak se vykonávají skokové instrukce.
+= 24 Jak funguje počítač a jak se vykonávají skokové instrukce.
 - počítač je programován obsahem paměti 
 - instrukce se vykonávají sekvenčně
 - každy krok závisí a tom předchozím
@@ -1245,7 +1246,7 @@
     - se pouze inkrementuje o délku právě vykonané instrukce (neskočilo se)  
 
 
-= 23. Popište a nakreslete architekturu dle von Neumann. Napište jeho vlastnosti, výhody a nevýhody.
+= 25. Popište a nakreslete architekturu dle von Neumann. Napište jeho vlastnosti, výhody a nevýhody.
 
 #figure(caption: [Počítač dle _von Neumann_], image("arch_poc/arch_poc2.png", width: 50%))
 
@@ -1264,7 +1265,7 @@
 
 #pagebreak()
   
-= 24. Popište a nakreslete harvardskou architekturu, popište rozdíly, výhody a nevýhody oproti von Neumann. Na obrázku vyznačte části, které mají a nemají společné. Která architektura je podle vás lepší a proč?
+= 26. Popište a nakreslete harvardskou architekturu, popište rozdíly, výhody a nevýhody oproti von Neumann. Na obrázku vyznačte části, které mají a nemají společné. Která architektura je podle vás lepší a proč?
 
 #figure(image("arch_poc/arch_poc3.png", width: 70%), caption: [Počítač dle harvardské architektury])
 
@@ -1295,7 +1296,7 @@
 #align(center, text(24pt)[*Komunikace*])
 
 = Otázky:
-25. Komunikace se semafory a bez semaforů (indikátorů). Nakresli aspoň jedním směrem.
+27. Komunikace se semafory a bez semaforů (indikátorů). Nakresli aspoň jedním směrem.
 + Přenos dat použitím V/V brány s bufferem. Nakreslit obrázek komunikace jedním směrem a jak se liší komunikace druhým směrem. V jakých periferiích se používá.
 + Popiš DMA blok a nakresli schéma DMA řadič v architekuře dle von~Neumanna.
 
@@ -1310,7 +1311,7 @@
   - možnost použít brány s pamětí _(buffer)_
     - ten je potřebný při obostranném (úplného) korespondenčním režimu
 
-= 25. Komunikace se semafory a bez semaforů (indikátorů). Nakresli aspoň jedním směrem.
+= 27. Komunikace se semafory a bez semaforů (indikátorů). Nakresli aspoň jedním směrem.
 == Technika nepodmíněného vstupu a výstupu _(bez semaforu/indikátoru)_
 #figure(image("komunikace/image1.png", width: 60%), caption: [Technika nepodméněného vstupu a výstupu _bufferu_])
 - #underline[vstup] _(input)_ - procesor vyšle signál _RD_ (read) 
@@ -1349,7 +1350,7 @@
 - obrázky popisují #emph[jednosměrný korespondenční režim] (neúplný) - není zde _buffer_ uprostřed komunikace
   - vysílač dat (ať už procesor nebo periférie) je povinen si data udržovat při celém průběhu komunikace - nemá _buffer_ (na obrázku jako registr), kam by je průběžně mohl zapisovat
 
-= 26. Přenos dat použitím V/V brány s bufferem. Nakreslit obrázek komunikace jedním směrem a jak se liší komunikace druhým směrem. V jakých periferiích se používá.
+= 28. Přenos dat použitím V/V brány s bufferem. Nakreslit obrázek komunikace jedním směrem a jak se liší komunikace druhým směrem. V jakých periferiích se používá.
 
 - funguje na principu _input/output_ v technice bez _bufferu_ (minulá otázka) ale tentokrát ten _buffer_ má
 - využíva _buffer_ (na obrázku registr) jako vyrovnávací paměť a klopný obvod _(flip-flop)_ jako semafor/indikátor
@@ -1370,7 +1371,7 @@
     caption: [Technika korespondenčně obousměrná s _bufferem_],
 )
 
-= 27. Popiš DMA blok a nakresli schéma DMA řadič v architekuře dle von~Neumanna.
+= 29. Popiš DMA blok a nakresli schéma DMA řadič v architekuře dle von~Neumanna.
 
 - DMA _(Direct Memory Access)_ blok / kontrolér / řadič 
   - umožňuje perifením zařízením vstupovat do hlavní paměti přímo
@@ -1414,11 +1415,11 @@
 #align(center, text(24pt)[*Assembly x86*])
 
 = Otázky:
-28. Jak adresujeme na úrovni strojového kódu - příklad. 
+30. Jak adresujeme na úrovni strojového kódu - příklad. 
 + Podmíněné a nepodmíněné skoky v strojovém kódu.
 + Jak řešíme v Assembly x86 podmínky - co jím musí předcházet. Jaký je vztah mezi tím, co je předchází, a tou podminkou. Kde a proč záleží na datových typech.
 
-= 28. Jak adresujeme na úrovni strojového kódu - příklad. 
+= 30. Jak adresujeme na úrovni strojového kódu - příklad. 
 - adresování dělíme na _přímé_ a _nepřímé_
 - #underline[přímé adresování:]
   - uvádíme konkrétní adresu v paměti 
@@ -1456,7 +1457,7 @@
 
 #pagebreak()
 
-= 29. Podmíněné a nepodmíněné skoky v strojovém kódu.
+= 31. Podmíněné a nepodmíněné skoky v strojovém kódu.
 - skokové instrukce:
   ```asm
   ; tyto jsou nepodmíněné
@@ -1502,7 +1503,7 @@
 
 #pagebreak()
 
-= 30. Jak řešíme v Assembly x86 podmínky - co jím musí předcházet. Jaký je vztah mezi tím, co je předchází, a tou podmínkou. Kde a proč záleží na datových typech.
+= 32. Jak řešíme v Assembly x86 podmínky - co jím musí předcházet. Jaký je vztah mezi tím, co je předchází, a tou podmínkou. Kde a proč záleží na datových typech.
 - viz předchozí otázka - řeší se tam skokové instrukce a komparační instrukce ```asm cmp, test```
 - v Assembly řešíme podmínky instrukcemi, které nastaví příznakové bity v registru ```asm flags```, a skokovými instrukcemi
   - příznakové bity v 8-bit ```asm flags``` registru:
@@ -1560,7 +1561,7 @@
 
 
 = Otázky:
-31. Princip programování CUDA - jak, kde, kdy se přesouvají data při výpočtu.
+33. Princip programování CUDA - jak, kde, kdy se přesouvají data při výpočtu.
 + Jaké je C/C++ rozšíření CUDA a jak to využije programátor. Jak si programátor organizuje výpočet. K čemu je mřížka. Nákres dobrovolný.
 + Čemu by se měl programátor vyhnout a jak CUDA funguje.
 
@@ -1623,7 +1624,7 @@
 
 - některé počítače mají společnou sdílenou paměť mezi _CPU_ a _GPU_
 
-= 31. Princip programování CUDA - jak, kde, kdy se přesouvají data při výpočtu.
+= 33. Princip programování CUDA - jak, kde, kdy se přesouvají data při výpočtu.
 
 #figure(
   image("cuda/image6.png", width: 65%),
@@ -1642,7 +1643,7 @@
 
 #pagebreak()
 
-= 32. Jaké je C/C++ rozšíření CUDA a jak to využije programátor. Jak si programátor organizuje výpočet. K čemu je mřížka. Nákres dobrovolný.
+= 34. Jaké je C/C++ rozšíření CUDA a jak to využije programátor. Jak si programátor organizuje výpočet. K čemu je mřížka. Nákres dobrovolný.
 - CUDA přínáší rozšíření jazyka C/C++, které umožňuje využít výpočetní výkon grafických karet vyráběných společností Nvidia
 - jsou jimi _kernely_, modifikátory funkcí a proměnných, datové typy a struktury, předdefinované globální proměnné, API funkce s předponou `cuda`
   - _kernel_ je funkce napsaná pro spuštění v jednotlivých jádrech grafické karty:
@@ -1723,7 +1724,7 @@
 
 #pagebreak()
 
-= 33. Čemu by se měl programátor vyhnout a jak CUDA funguje.
+= 35. Čemu by se měl programátor vyhnout a jak CUDA funguje.
 - fungování CUDA je popsáno v předchozích otázkách
 - měl by se minimalizovat přesun dat mezi _"Host"_ a _"Device"_ paměťmi
   - přes API funkci ```c cudaMemcpy(...)```, ideálně přesouvat data jen dvakrát - před výpočtem a po dokončení výpočtu
@@ -1752,11 +1753,11 @@
 #align(center, text(24pt)[*Paralelní systémy*])
 
 = Otázky:
-34. Charakterizujte Flynnovu taxonomii paralelních systémů.
+36. Charakterizujte Flynnovu taxonomii paralelních systémů.
 + Charakterizujte komunikační modely paralelních systémů.
 + Vysvětlit Amdahlův zákon a jak bychom se podle něj rozhodovali.
 
-= 34. Charakterizujte Flynnovu taxonomii paralelních systémů.
+= 36. Charakterizujte Flynnovu taxonomii paralelních systémů.
 #figure(
   caption: [Flynnova taxonomie paralelních systémů],
   image("par_sys/image1.png", width: 60%)
@@ -1816,7 +1817,7 @@
 
 #pagebreak()
 
-= 35. Charakterizujte komunikační modely paralelních systémů.
+= 37. Charakterizujte komunikační modely paralelních systémů.
 
 #figure(
   caption: [Klasifikace komunikačních modelů paralelních systémů],
@@ -1892,7 +1893,7 @@
   image("par_sys/image3.png", width: 55%)
 )
   
-= 36. Vysvětlit Amdahlův zákon a jak bychom se podle něj rozhodovali.
+= 38. Vysvětlit Amdahlův zákon a jak bychom se podle něj rozhodovali.
 - u paralelizace je problém růstu výkonnosti jako celku
   - navýšením výpočetní síly, by měl (v ideálním světě) růst výkon o stejný faktor   
   - objevují se zde však ztráty výkonu:
