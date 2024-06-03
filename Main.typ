@@ -109,7 +109,7 @@
 - mikroprocesory mohou být vyráběny pro řešení velmi specifických úloh, proto nelze jejich konstrukce a vlastnosti zcela zgeneralizovat - můžeme očekávat velké rozdíly mezi jednotlivými mikroprocesory
 - převážně se používá harvardská koncepce:
   - oddělená paměť pro program a data
-  - možnost použít jiné technologie (ROM, RWM) a nejmenší adresovatelnou jednotku (12, 16, 32)
+  - možnost použít jiné technologie (ROM, RWM) a nejmenší adresovatelné jednotky (12, 16, 32)
 - procesory jsou obvykle RISC:
   - kvůli jednoduchosti, menší spotřebě energie a menší velikosti
 - typy paměti mikroprocesorů / monotlitických počítačů:
@@ -142,7 +142,7 @@
   - integrován přímo na čipu - není dobrá stabilita (i rozdílná tepota způsobí značné odchýlky)
     - hodí se tam, kde není potřebna vazba na reálný čas
   - externí generátory - často se používájí:
-    - krystal (křemenný výbrus) - dobrá stabilita, dražší
+    - krystal (křemenný výbrus) - dobrá stabilita, dražší (postavna na piezoelektrickém jevu - krystal při deformaci generuje el. napětí)
     - keramický rezonátor - dobrá stabilita, dražší
     - RC oscilátory - může být nepřesný, levný
 #figure(
@@ -153,7 +153,7 @@
     ),
     caption: [Externí zdroje synchronizace - _a)_ externí zdroj, _b)_ oscilátor s _RC_ článkem, _c)_ krystal]
 )
-- počáteční stav _RESET_
+- počáteční stav _RESET:_
   - monolit je sekvenční obvod závislý nejen na instrukcích ale i na stavech a signálech
   - aby počítač spolehlivě spustil program, musí být definován přesný počáteční stav (stav _RESET_)
   - proto jsou implementovány inicializační obvody, které počítač do tohoto stavu dostanou
@@ -167,7 +167,7 @@
   - hlídání rozsahu napětí, ve kterém počítač pracuje:
     - např. počítač funguje jen ve stanoveném rozmezí 3-6V
     - dojde-li k tomu, že napětí napájení stoupne nad nebo klesne pod toto rozmezí $->$ _RESET_
-- má integrovaný přerušovací podsystém _(Interrupt Subsystem)_
+- má integrovaný přerušovací podsystém: _(Interrupt Subsystem)_
   - povoluje a zakazuje _interrupts_ - požadavky od periferií pro procesor, aby něco bylo vykonáno
   - definuje způsob obsluhy _interruptů_
   - zjišťuje zdroj a prioritu _interruptů_
@@ -188,7 +188,8 @@
   - většinou je 4-bit nebo 8-bit - předají se naráz (ne sériově)
   - lze nastavit jednotlivé vývody jako vstupní a výstupní piny (vodiče)
   - instrukční soubor s nimi pracuje buď jako s jednotlivými bity nebo celky
-- umožňují komunikaci po sériové lince s vnějšími zařízeními
+- tyto univerzální vývody umožňují komunikaci po sériové lince s vnějšími zařízeními
+  - např. lze jimi dynamicky ovládat LCD a LED
 
 == Sériové rozhraní
 - pro přenášení dat mezi periferními zařízeními a procesorem
@@ -223,19 +224,18 @@
 
 == A/D převodníky
 - fyzikal. veličiny vstupují do mikropočítače v analog. formě (spojité)
-- analog. signály mohou být - napětí _(U - Voltage)_, proud _(I - Current)_, odpor _(R - Resistance)_
+- analog. signály mohou být 
+  - napětí _(U - Voltage/Electric Tension)_, proud _(I - Current)_, odpor _(R - Resistance)_
 - převede analog. signál do digital. formy
 - základní typy:
   - komparační A/D převodník
   - A/D převodník s pomocí D/A převodem
   - integrační A/D převodník
   - převodník s RC článkem
-#pagebreak()
+
 == D/A převodníky
 - převede hodnotu z digital. formy do analog. formy
-- typy:
-  - PWM - Pulse Width Modulation
-  - paralelní převodník
+- typy: PWM - Pulse Width Modulation & paralelní převodník
 
 == RTC - real time clock
 - hodiny reálného času
@@ -251,13 +251,13 @@
 - realizován buď programovou implementací nebo dedikovaným obvodem
 - číslicový signál na výstupu mikropočítače má obvykle 2 konstantní napěťové úrovně
   - $U_0$ pro logickou 0 a $U_1$ pro logickou 1
-- poměrem časů, kdy je výstup na log. 1 a log. 0, můžeme modulovat z digitální hodnoty signál analogový
+- poměrem časů, kdy je výstup na log. 1 a log. 0, se moduluj z digitál. hodnoty analog. signál
   - bude roven střední hodnotě napětí za dobu jedné dané periody
   - čas $T_0$ - U je na úrovni $U_0$ neboli napětí reprezentujicí log. 0
   - čas $T_1$ - U je na úrovni $U_1$ neboli napětí reprezentujicí log. 1
   - perioda - $T = T_0 + T_1$ 
 - střední hodnota napětí, $U#sub[PWM]$, je vypočitána vztahem: 
-  $ U#sub[PWM] = U_0 + (U_1 - U_0) dot T_1/(T_0 + T_1) $
+  $ U#sub[PWM] = U_0 + (U_1 - U_0) dot T_1/(T_0 + T_1) #text[nebo] U#sub[PWM] = Delta U T_1/T + U_0  $
 - výstup se zesílí výstupním zesilovačem
 - pro převod PWM pulsu na analog. veličinu se používá RC článek
   - časová konstanta RC musí být výrazně větší než $T$ (toto způsobuje zpomalení)
@@ -279,7 +279,7 @@
 
 = 4. A/D a D/A převodníky a k čemu se používají. Nákres dobrovolný.
 == A/D typy:
-  - *A/D komparační* - srovnání měřené analog. veličiny s referenčními hodnotami napětí a to v~určitém poměru (1 : 2 : 4 : 8 : 16 : 32 : 64 : 128 : 256) -- odporová dělička
+  - *A/D komparační* - srovnání měřené analog. veličiny s referenčními hodnotami napětí a to v~určitém poměru (1 : 2 : 4 : 8 : 16 : 32 : 64 : 128 : 256) -- realizováno odporovou děličkou
     - je to paralelní převodník 
       - $U#sub[INP]$ se chytne k nějakému komparátoru stejného nebo podobného napětí
       - vybraný komparátor bude mít na výstupu 1 a ostatní 0 
@@ -327,7 +327,7 @@
         - přičemž měříme čas vybíjení $T#sub[REF]$
       - to samé uděláme s měřeným odporem $R#sub[INP]$ - získáme tím čas vybíjení $T#sub[INP]$ (na obrázku $T_s$)
       - hodnotu vstupního napětí, $R#sub[INP]$, získáme vztahem:
-      $ R#sub[INP] = R#sub[REF] dot (T#sub[INP])/(T#sub[REF]) #text[ protože ] (R#sub[INP])/(R#sub[REF]) = (T#sub[INP])/(T#sub[REF]) $
+      $ R#sub[INP] = R#sub[REF] dot (T#sub[INP])/(T#sub[REF]) because (R#sub[INP])/(R#sub[REF]) = (T#sub[INP])/(T#sub[REF]) $
       
 
 #figure(
@@ -345,7 +345,7 @@
 
 == D/A převodníky
   - *PWM* (viz otázka na PWM)
-  - *paralelní převodník*
+  - *paralelní D/A převodník*
     - je rychlý
     - založeny na přímém převodu digitální hodnoty na analog. veličinu
     - základem je odporová síť, na níž se vytvářejí částečné výstupní proudy:
@@ -453,8 +453,8 @@
   - při čtení se disk pohybuje stejným směrem konstantní rychlostí
   - na aktivní feromagnetické vrstvě jsou místa magnetizované tím či oním směrem - mezi nimi jsou místa magnetického přechodu - tzv. _"magnetiké rezervace"_
     - právě ony představují zapsanou informaci
-    - změny mag. pole na feromag. vrstvě způsobují napěťové impulsy na svorkách cívky čtecí hlavy
-  - impulsy jsou nádledovně zesíleny elektrickými zesilovači
+    - změny mag. polí na feromag. vrstvě způsobují napěťové impulsy na svorkách cívky čtecí hlavy
+  - impulsy jsou následovně zesíleny elektrickými zesilovači
 
 #figure(
   caption: "Princip magnetického zápisu na feromagnetickou vrstvu disku",
@@ -477,8 +477,8 @@
 - to umožňuje menší a hustší záznam dat na povrchu disku - zvyšuje kapacitu pevného disku
 - při kolmém zápisu jsou magnetická pole stabilnější a méně náchylná k rušení
 
-= 8. Popište a nakreslete stavbu pevného disku. Nechtěl podélý a kolmý zápis.
-- je to uzavřená jednotka v počítači používaná pro trvalé ukládání dat (nevolatilní)
+= 8. Popište a nakreslete stavbu pevného disku. Nechtěl podélný a kolmý zápis.
+- je to uzavřená jednotka v počítači používaná pro trvalé ukládání dat (nevolatilní paměť)
 - pouzdro chrání disk před nečistotami a poškozením
 - obsahuje nevýjmutelné pevné plotny diskového tvaru (slitiny hliníku / sklo) - odtud _pevný_ disk
 - části pevného disku:
@@ -530,7 +530,7 @@
   - můžeme si je představit jako výseče na plotně
   - je to nejmenší adresovatelná jednotka na disku - na rozdíl od hlav nebo cylindrů, číslujeme od 1
   - její velikost určí řadič při formátování disku
-- na začátku sektoru je hlavička, identifikující začátek sektoru a obsahující jeho číslo
+- na začátku sektoru je hlavička identifikující začátek sektoru a obsahující jeho číslo
 - konec - tzv. zakončení sektoru - pro ukládání kontrolního součtu _(ECC - Error Correcting Code)_ 
   - slouží ke kontrole integrity uložených dat
 - jednotlivé sektory se oddělují mezisektorovými mezerami - zde není možné data uložit 
@@ -605,7 +605,7 @@
   + projde druhým polarizačním filtrem (které je otočené o 90° proti prvnímu)
   - klidový režim (bez napětí) - propouští světlo
   - přivede-li se napětí, krystalická struktura (šroubovice) se zorientuje podle směru toku proudu
-    - světlo projde prvnímpolarizačním filtrem, neotočí se $->$ je definitivně zablokováno
+    - světlo projde prvním polarizačním filtrem, neotočí se $->$ je definitivně zablokováno
     - střídáním proudu lze určit intenzitu propouštěného světla
   - nutno podsvítit bílým světlem (elektroluminiscenční výbojky, LED, OLED)
   - vrstva krystalů je rozdělená na malé buňky stejné velikosti, tvořící pixely
@@ -643,7 +643,7 @@
 == Pasivní matice LCD
   - obsahuje mřížku vodičů, body se nacházejí na průsečících mřížky
   - při vyšším počtu bodů narůstá potřebné napětí → rozostřený obraz, velká doba odezvy (3 FPS) nevhodné pro hry, filmy, televizi atd.
-    - z jediného rosvícenéhpo bodu se rozbíhají postupně slábnoucí vertikální a horiznontální čáry
+    - z jediného rosvíceného bodu se rozbíhají postupně slábnoucí vertikální a horiznontální čáry
   - používá se v zařízeních s malým displejem (hodinky)
   
 == Aktivní matice LCD
@@ -811,7 +811,7 @@
 #set page(numbering: "1 / 1", header: align(right)[RISC])
 #align(center, text(24pt)[*RISC*])
 
-= Otázky
+= Otázky:
 13. Popište na RISC procesoru zřetězené zpracování instrukcí, jaké má chyby a jak se řeší.
 + Popište na RISC procesoru zřetězené zpracování instrukcí a jak nám pomůže predikce skoku.
 + Jaké problémy a hazardy mohou nastat u RISC.
@@ -901,7 +901,7 @@
 
 = 16. Popiš základní konstrukci a vlastnosti mikroprocesoru RISC.
 - mají malý instrukční soubor
-- vývojová větev RISC vyvinula řadu zásadních kritérií, charakterizujících metodiku návrhu nejen procesoru, ale celého počítače
+- vývojová větev RISC vyvinula řadu zásadních kritérií, charakterizujících metodiku návrhu nejen procesoru, ale i celého počítače
 - procesoru se má přenechat jenom ta činnost, která je nezbytně nutná
   - další potřebné funkce přenést do architektury počítače, programového vybavení a kompilátoru
 - výsledkem návrhu jsou zejména tyto vlastnosti:
@@ -974,14 +974,14 @@
 
 #align(center, text(24pt)[*CISC*])
 
-= Otázky
+= Otázky:
 18. Popište a nakreslete jakéhokoli nástupce Intel Pentium Pro, se kterým jsme se seznámili.
 
 = 18. Popište a nakreslete jakéhokoli nástupce Intel Pentium Pro, se kterým jsme se seznámili.
 == Intel Core i9-12900K _(2021)_
 - 12-tá generace - codename _"Alder Lake"_
   - hybridní arch. _"Alder Lake"_ - na jednom čipu dvě rozdílné arch. jader
-  - nastavila nový standard
+  - nastavila nový standard pro statní výrobce procesorů
 - 10 nm - Enhanced Super-Fin _(Intel 7)_
 - 16 jader:
   - 8 P-cores - arch. _"Golden Cove"_, vhodné pro hry, videa, grafic. editory
@@ -1027,9 +1027,9 @@
 - 6 instructions / cycle
 - 512 entry ROB _(Re-Order Buffer = Out-Of-Order Window)_
 - 10 Execution Units:
-  - VALU _(Vector ALU)_
-  - FPU
-  - Branch
+  - 5x ALU
+  - 3x FPU
+  - 2x Branch
 - supports these instruction sets:
   - FMA - extension of SSE _(Streaming SIMD Extension)_
   - AMX _(Advanced Matrix Extension)_
@@ -1064,7 +1064,7 @@
 #set page(numbering: "1 / 1", header: align(right)[Paměti])
 #align(center, text(24pt)[*Paměti*])
 
-= Otázky
+= Otázky:
 19. Rozdělení polovodičových pamětí a jejich popis (klíčová slova a zkratky nestačí).
 + Jak funguje DRAM, nakresli. Napiš stručně historii.
 + Hierarchie paměti, popsat a zakreslit.
@@ -1201,7 +1201,7 @@
 
 #align(center, text(24pt)[*Architektura počítačů*])
 
-= Otázky
+= Otázky:
 21. Popiš základní konstrukci a vlastnosti počítače.
 + Jak funguje počítač a jak se vykonávají skokové instrukce.
 + Popište a nakreslete architekturu dle von Neumann. Napište jeho vlastnosti, výhody a nevýhody.
@@ -1294,7 +1294,7 @@
 
 #align(center, text(24pt)[*Komunikace*])
 
-= Otázky
+= Otázky:
 25. Komunikace se semafory a bez semaforů (indikátorů). Nakresli aspoň jedním směrem.
 + Přenos dat použitím V/V brány s bufferem. Nakreslit obrázek komunikace jedním směrem a jak se liší komunikace druhým směrem. V jakých periferiích se používá.
 + Popiš DMA blok a nakresli schéma DMA řadič v architekuře dle von~Neumanna.
@@ -1305,8 +1305,8 @@
   - obvod zprostředkovávajicí předávání dat mezi sběrnicí počítače a perifériemi 
   - základem je _latch register_ (záchytný registr) s _tří-stavovým výstupem_ (three-state, tří-stavový budič sběrnice)
     + _Inactive_ stav - stav vysoké impedance, "Do not disturb" 
-    + _Input_ stav - periférie vysíla data
-    + _Output_ stav - periférie data přijímá
+    + _Input_ stav - periférie data přijímá
+    + _Output_ stav - periférie vysíla data
   - možnost použít brány s pamětí _(buffer)_
     - ten je potřebný při obostranném (úplného) korespondenčním režimu
 
@@ -1318,7 +1318,7 @@
   - nijak se nekotroluje jestli je periférie připravená (očekává se, že je vždy připravená)
 - #underline[výstup] _(output)_ - procesor vyšle signál _WR_ (write) 
   - výstupní zařízení data z procesoru převezme
-  - nijak se nekontroluje, jestli data perfiferní zařízení opravdu převzalo
+  - nijak se nekontroluje, jestli data periferní zařízení opravdu převzalo
 - tento způsob je velmi jednoduchý
 - předpokládá neustálou připravenost periferního zařízení
 
@@ -1413,7 +1413,7 @@
 #set page(numbering: "1 / 1", header: align(right)[Assembly x86],)
 #align(center, text(24pt)[*Assembly x86*])
 
-= Otázky
+= Otázky:
 28. Jak adresujeme na úrovni strojového kódu - příklad. 
 + Podmíněné a nepodmíněné skoky v strojovém kódu.
 + Jak řešíme v Assembly x86 podmínky - co jím musí předcházet. Jaký je vztah mezi tím, co je předchází, a tou podminkou. Kde a proč záleží na datových typech.
@@ -1559,7 +1559,7 @@
 #align(center, text(24pt)[*CUDA*])
 
 
-= Otázky
+= Otázky:
 31. Princip programování CUDA - jak, kde, kdy se přesouvají data při výpočtu.
 + Jaké je C/C++ rozšíření CUDA a jak to využije programátor. Jak si programátor organizuje výpočet. K čemu je mřížka. Nákres dobrovolný.
 + Čemu by se měl programátor vyhnout a jak CUDA funguje.
@@ -1751,7 +1751,7 @@
 #set page(numbering: "1 / 1", header: align(right)[Paralelní systémy])
 #align(center, text(24pt)[*Paralelní systémy*])
 
-= Otázky
+= Otázky:
 34. Charakterizujte Flynnovu taxonomii paralelních systémů.
 + Charakterizujte komunikační modely paralelních systémů.
 + Vysvětlit Amdahlův zákon a jak bychom se podle něj rozhodovali.
@@ -1874,7 +1874,7 @@
 *DMP (Distributed Multiprocessing)* - multiprocesory s distribuovanou pamětí
 - výkonné samostatné počítače s lokalními pamětmi
   - mají-li sdílenou paměť $->$ mohou být také SMP
-- všechny procesory mohou současně přistupovat navzájem do svých lokálních pamětí
+- všechny procesory si mohou současně přistupovat navzájem do svých lokálních pamětí
 - škalovatelnost je mnohem vyšší než u SMP
 - projovací síťě:
 #set enum(numbering: "a)")
