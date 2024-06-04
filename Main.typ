@@ -1,4 +1,7 @@
-#set text(lang: "cs")
+#set text(
+  lang: "cs",
+  // font: "New Computer Modern"
+)
 #set enum(numbering: "1)")
 #set page(footer: context(
   smallcaps([
@@ -16,7 +19,7 @@
   text(22pt)[*Architektury počítačů a paralelních systémů*]
 )
 
-= Monolity
+= Monolity 
 
 + Periférie monolitických počítačů - vybrat si a popsat.
 + Vysvětlete PWM a kde se používá. Obrázek dobrovolný.
@@ -62,7 +65,7 @@
 + Jak funguje počítač a jak se vykonávají skokové instrukce.
 + Popište a nakreslete harvardskou architekturu, popište rozdíly, výhody a nevýhody oproti von Neumann. Na obrázku vyznačte části, které mají a nemají společné. Která architektura je podle vás lepší a proč?
 + Popište a nakreslete architekturu dle von Neumann. Napište jeho vlastnosti, výhody a nevýhody.
-#pagebreak()
+
 = Komunikace
 
 27. Komunikace se semafory a bez semaforů (indikátoru). Nakresli aspoň jedním směrem.
@@ -403,7 +406,7 @@
 - dual ARM Cortex-M0+ - 2 jádra
 - taktovací frenkvence 133MHz
 - SRAM - 264kB, 6 na sobě nezávislých bank 
-- až 16MB pro off-chip Flash pamět s programem - přes QSPI port
+- až 16MB pro off-chip Flash paměť s programem - přes QSPI port
 - DMA řadič
 - fully connected AHB _(Advanced High-performance Bus)_ 
   - propojovací síť všech komponent s procesorem
@@ -845,7 +848,7 @@
             - jednobitová - v instrukci skoku je 1 bit vyhrazen pro _flag_, který předpovídá, jestli se bude či nebude skákat (přepíná se po jednom vykonání a nevykonání skoku)
             - dvoubitová - v instrukci jsou vyhrazeny 2 bity (přepína se až po dvou konsekutivních vyhodnocení skoku)
           - zpoždění skoku - pokud možno, vykonají se instruce jiné ještě před instrukcí skoku (i přesto, že jim v programu instrukce skoku předchází)
-          - buffer s pamětí skoků (_BTB -- Branch Target Buffer_) - pamatuje si stovky tzv. _target_ adres skoků
+          - buffer s pamětí skoků (_BTB -- Branch Target Buffer_) - pamatuje si tisíce tzv. _target_ adres skoků
       - strukturální hazardy:
         - pomalé sběrnice a registry mezi jednotkami jednot. fází
         - musí se koordinovat přístup ke sběrnici
@@ -867,7 +870,7 @@
 #pagebreak()
       
 = 15. Popište na RISC procesoru zřetězené zpracování instrukcí a jak nám pomůže predikce skoku.
-- viz 13. otázku - jak funguje zřetězené zpracování instrukcí
+- viz 14. otázku - jak funguje zřetězené zpracování instrukcí
 - typy řešení predikcí skoků - _jednobitová, dvoubitová, BTB_:
   - _jednobitová_ predikce:
     - ve formátu instrukce skoku se vyhradí jeden bit pro uložení stavu _flagu_ predikující, zda se skok vykoná či ne
@@ -922,12 +925,12 @@
     - zajišťuje lepší plnění fronty instrukcí 
     - jednotný formát zjednodušuje dekódování instrukcí
   - výsledné počítače vytvořené podle těchto pravidel přinášejí výhody pro uživatele i pro výrobce
-    - zkracuje se vývoj procesoru - již první realizované čipy fungují správně
+    - zkracuje se vývoj procesoru - již první realizované čipy fungují správně (většinou)
   - architektura RISC má i své nedostatky 
     - nutný nárůst délky programů - tvořený omezeným počtem instrukcí jednotné délky 
       - zpomalení, které by z toho mělo nutně plynout, se ale v praxi nepotvrdilo
         - procento instrukcí, které muselo být rozepsáno, je malé
-    - většina výrobců CISC procesorů se uchýlila při výrobě procesorů k realizaci stále většího počtu vlastností arch. RISC
+  - většina výrobců CISC procesorů se uchýlila při výrobě procesorů k realizaci stále většího počtu vlastností arch. RISC
 
 #pagebreak()
 
@@ -940,7 +943,7 @@
 - 8 jader
 - cache:
   - L1 - 2x64 KiB na jádrech pro instrukce a data
-  - L2 - 256 nebo 512 KiB - vyrovnávací pamět mezi procesorem a hlavní pamětí (RWM SDRAM)
+  - L2 - 256 nebo 512 KiB - vyrovnávací paměť mezi procesorem a hlavní pamětí (RWM SDRAM)
 - out-of-order vykonávaní instrukcí - reorder buffer může mít 160 položek
 - výpočetní jednotky: 4x ALU, FPU, ASIMD, 2x Branch
 - prediktor větvení \~8000 položek
@@ -991,7 +994,7 @@
 - cache:
   - L1: 80 KB per P-core (32KB I-cache + 48KB D-cache), blízko jednot. jader
   - L2: 1,25 MB per P-core, 2MB per E-core, mezi CPU a hlavní pamětí
-  - L3: 30 MB společná sdílená pamět všech jader
+  - L3: 30 MB společná sdílená paměť všech jader
 - podpora DDR4 _(Double Data Rate)_ a DDR5 čipů SDRAM
   - vysoká propustnost - rychlý přenos dat mezi hlavní pamětí a procesorem
 - podpora PCIe 4.0 _(Peripheral Component Interconnect Express)_ a PCIe 5.0
@@ -1176,7 +1179,7 @@
 )
 
 - paměti uspořádaný podle ceny, rychlosti a kapacity
-- každá úroveň paměti tvoří vyrovnávací _(cache)_ pamět té pod ní 
+- každá úroveň paměti tvoří vyrovnávací _(cache)_ paměť té pod ní 
   - data z OpMem jsou částečně v LCache
   - data z SSD jsou částečně v OpMem atd.
 - dělí se na volatilní _(Temporary Storage Area)_ a nevolatilní _(Permanent Storage Area)_
@@ -1230,7 +1233,7 @@
 - každy krok závisí a tom předchozím
 - procesor _(CPU)_ je sekvenční obvod - vstupem jsou strojové instrukce z paměti
   - má svou vlastní rychlou paměť pro ukládání výsledku instrukcí - _registry_
-  - instrukční ukazatel _(IP - Instrukction Pointer)_ - někdy jako _PC_ _(Program Counter)_
+  - instrukční ukazatel _(IP - Instruction Pointer)_ - někdy jako _PC_ _(Program Counter)_
     - ukazuje na instrukci v paměti, která má být vykonána
     - pomocí něj _"fetchne"_ insrukci z paměti a vykoná jí
   #figure(caption: "Princip fungování počítače",image("arch_poc/arch_poc1.png", width: 50%))
@@ -1303,13 +1306,16 @@
 
 == Technika _I/O_ brán
 - _I/O gate_ (vstupně-vystupní brány) 
-  - obvod zprostředkovávajicí předávání dat mezi sběrnicí počítače a perifériemi 
+  - obvod zprostředkovávajicí předávání dat mezi sběrnicí počítače a perifériemi
   - základem je _latch register_ (záchytný registr) s _tří-stavovým výstupem_ (three-state, tří-stavový budič sběrnice)
     + _Inactive_ stav - stav vysoké impedance, "Do not disturb" 
     + _Input_ stav - periférie data přijímá
     + _Output_ stav - periférie vysíla data
+    - má ho každý tzv. budič sběrnice (každé zařízení/periférie, které je napojené na sběrnici)
+    - jeho stav dává vědět ostatním zařízením/periferiím, jestli na sběrnici data zapisuje _(Output)_, čte _(Input)_ nebo s ní momentálně nekomunikuje _(Inactive)_
   - možnost použít brány s pamětí _(buffer)_
     - ten je potřebný při obostranném (úplného) korespondenčním režimu
+  - v následujicích otázkách jsou popsány některé druhy technik _I/O_ brán
 
 = 27. Komunikace se semafory a bez semaforů (indikátorů). Nakresli aspoň jedním směrem.
 == Technika nepodmíněného vstupu a výstupu _(bez semaforu/indikátoru)_
@@ -1358,7 +1364,7 @@
   - možnost vzájemného blokování _(interlock)_ - vysílač dat a přijímač dat testují stav indikátoru $Q$
 - #underline[vstup] _(input)_
   - $Q$ informuje procesoru připravenost dat ve vyrovnávací paměti _(bufferu)_
-  - pro periférii informuje $Q$ 
+  - pro periférii informuje $Q$
     - zda procesor data již přečetl a je možno do _bufferu_ zaslat další data
     - nebo data jěště přečtena nebyla a nemůže zaslat další data do _bufferu_
 - #underline[výstup] _(output)_ - význam indikátoru $Q$ je pro procesor a periferii opačný než v _input_
@@ -1379,7 +1385,7 @@
       - bez _DMA_ bloku musí každý byte dat z periférie projít procesorem a až potom procesor může přistoupit do paměti
       - procesor se samotného přesunu dat neučastní - pouze nastaví/naprogramuje _DMA blok_ 
       - sběrnice musí být při přesunu uvolněna - může být maximálně jeden _budič_ sběrnice
-        - procesor přepne všechny budiče sběrnic do stavu vysoké impedance
+        - procesor přepne všechny budiče sběrnice do stavu vysoké impedance
       - _DMA_ zajistí přesun - generuje sám adresy v paměti, kam se bude zapisovat/číst
       
 - v _DMA_ bloku jsou tři registry sloužící pro styk se sběrnicí:
@@ -1398,7 +1404,7 @@
   + počka jeden paměťový cyklus $arrow$ inkrementuje _address register_, dekrementuje _counter_ (počet slov, které mají být ještě přesunuty)
   + testuje zda _counter_ $= 0$
     - pokud ano - ukončí _DMA_ komunikaci a vrátí kontrolu nad sběrnici procesoru 
-    - pokud ne - proces se opakuje od 6. kroku
+    - pokud ne - proces se opakuje od 5. kroku
   - čtení funguje obdobně, jen opačným směrem
   
 #figure(image("komunikace/image6.png", width: 60%), caption: [Přenos dat #emph[bez] _DMA_ bloku _(ve von Neumann)_ vyžadující neustálý zásah procesoru])
@@ -1461,35 +1467,42 @@
 - skokové instrukce:
   ```asm
   ; tyto jsou nepodmíněné
-  jmp <target>              ; nepodmíněný skok na <target>
-  call <target>             ; zavolání podprogramu, skočí se <target>
-  ret                       ; skočí se zpět do nadprogramu (jeho adresa je na stacku)
+    jmp <target>              ; nepodmíněný skok na <target>
+    call <target>             ; zavolání podprogramu, skočí se <target>
+    ret                       ; skočí se zpět do nadprogramu
+                              ; jeho adresa je na stacku
+
   ; další jsou už podmíněné
   ; tyto testují regitr rcx a jsou využivány pro cykly
-  loop <target>             ; if(--ecx) goto <target>
-  loope <target>            ; if(--ecx && zf) goto <target>
-  loopz <target>            ; stejné jako loope
-  loopne <target>           ; if(--ecx && !zf) goto <target>
-  loopnz <target>           ; stejné jako loopne
-  jcxz <target>             ; if(!rcx) goto <target>
-  ; tyto testují přímo jednotlivé bity ve stavovém registru procesoru
-  jz / je <target>          ; if equal = 1
-  jnz / jne <target>        ; if equal = 0
-  js <target>               ; if sign = 1
-  jns <target>              ; if sign = 0
-  jc <target>               ; if carry = 1
-  jnc <target>              ; if carry = 0
-  jo <target>               ; if overflow = 1
-  jno <target>              ; if overflow = 0
-  ; tyto řeší porovnavání čísel
-  ja / jnbe <target>        ; if below = 0 && equal = 0
-  jb / jnae / jc <target>   ; if below = 1 && equal = 0
-  jae / jnb / jnc <target>  ; if below = 0 && equal = 1 
-  jbe / jna <target>        ; if below = 1 && equal = 1
-  jg / jnle <target>        ; if less = 0 && equal = 0
-  jl / jnge <target>        ; if less = 1 && equal = 0
-  jge / jnl <target>        ; if less = 0 && equal = 1
-  jle / jng <target>        ; if less = 1 && equal = 1
+    loop <target>             ; if(--ecx) goto <target>
+    loope <target>            ; if(--ecx && zf) goto <target>
+    loopz <target>            ; stejné jako loope
+    loopne <target>           ; if(--ecx && !zf) goto <target>
+    loopnz <target>           ; stejné jako loopne
+    jcxz <target>             ; if(!rcx) goto <target>
+
+  ; tyto rozhodují o vykonání skoku na základě jednoho bitu ve flags registru
+  ; tím rozhodnou o vykonání skoku 
+  ; (testují jednotlivé bity ve stavovém (flags) registru procesoru)
+    jz / je <target>          ; if equal = 1
+    jnz / jne <target>        ; if equal = 0
+    js <target>               ; if sign = 1
+    jns <target>              ; if sign = 0
+    jc <target>               ; if carry = 1
+    jnc <target>              ; if carry = 0
+    jo <target>               ; if overflow = 1
+    jno <target>              ; if overflow = 0
+
+  ; tyto řeší porovnavání čísel, taktéž hledí na bity ve flags registru
+  ; (testují více flagů (bitů) ve flags registru)
+    ja / jnbe <target>        ; if below = 0 && equal = 0
+    jb / jnae / jc <target>   ; if below = 1 && equal = 0
+    jae / jnb / jnc <target>  ; if below = 0 && equal = 1 
+    jbe / jna <target>        ; if below = 1 && equal = 1
+    jg / jnle <target>        ; if less = 0 && equal = 0
+    jl / jnge <target>        ; if less = 1 && equal = 0
+    jge / jnl <target>        ; if less = 0 && equal = 1
+    jle / jng <target>        ; if less = 1 && equal = 1
   ```
 - skoky nepodmíněné, ```asm jmp, call, ret```, se vykonají vždy - _IP_ skočí na cílovou _(target)_ adresu
 - skoky podmíněné se vykonají pouze, tehdy když jsou nastaveny správné flagy
@@ -1862,7 +1875,7 @@
 - mají jednu centrální sdílenou paměť - může mít několik bank
   - je nutná sychronizace přístupu do této paměti
   - škálovatelnost je limitována propustnosti paměťového rozhraní (Memory Interface)
-- propojavací síťě:
+- propojavací sítě:
 #set enum(numbering: "a)")
   + centrální sběrnice _(bus based)_ - desítky okolo jedné sběrnice
   + křížový _(crossbar)_ přepínač - přepínání procesorů mezi více bank paměti
