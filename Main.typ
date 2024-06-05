@@ -8,7 +8,7 @@
     Architektury počítačů a paralelních systémů - zkouška
   #h(1fr)
   #counter(page).display(
-    "[1 / 1]",
+    "[ 1 / 1 ]",
     both: true,
   )
   ])),
@@ -65,6 +65,8 @@
 + Jak funguje počítač a jak se vykonávají skokové instrukce.
 + Popište a nakreslete harvardskou architekturu, popište rozdíly, výhody a nevýhody oproti von Neumann. Na obrázku vyznačte části, které mají a nemají společné. Která architektura je podle vás lepší a proč?
 + Popište a nakreslete architekturu dle von Neumann. Napište jeho vlastnosti, výhody a nevýhody.
+
+#pagebreak()
 
 = Komunikace
 
@@ -213,7 +215,7 @@
 - časovač - čítač, který je inkrementován interním hodinovým signálem
   - lze jim zajistit řízení událostí a chování v reálném čase
   - při přeteční se automaticky předa _Interrupt Request_ 
-  - krom počáteční hodnot lze nastavit i předdeličku
+  - krom počáteční hodnot lze nastavit i předděličku
 
 #figure(
     grid(
@@ -772,7 +774,7 @@
 - k pohybu částic je potřeba proud \~desítky nA při napětí 5-15 V
 - pro barvy se používají barevné filtry (stejně jako u LCD)
   - barevná hloubka - je závislá na počtu elektrod na jeden zobrazovací bod
-  - $(2^n)^c$ kde $n$ je počet elektrod a $c$ počet barevných složek (např. $(2^4)3 = 16^3 = 4096$)
+  - $(2^n)^c$ kde $n$ je počet elektrod a $c$ počet barevných složek (např. $(2^4)^3 = 16^3 = 4096$)
 
 #figure(
   caption: [Technologie _E-ink_ - pohled na kapsle ze strany],
@@ -1530,9 +1532,9 @@
     - IF _(interrupt flag)_ - řídí povolení a zakázání přerušení
     
   - instrukce, které nastaví příznakové bity:
-    - logické operace - ```asm and <d>, <s>|or <d>, <s>|xor <d>, <s>|not <r>```
-    - aritmetické operace - ```asm add <d>, <s>|sub <d>, <s>|inc <r>|dec <r>|mul <r>|div <r>```
-    - komparační a testovací operace - ```asm cmp <d>, <s>|test <d>, <s>```
+    - logické operace - ```asm and <d>, <s>  or <d>, <s>  xor <d>, <s>  not <r>```
+    - aritmetic. operace - ```asm add <d>, <s>  sub <d>, <s>  inc <r>  dec <r>  mul <r>  div <r>```
+    - komparační a testovací operace - ```asm cmp <d>, <s>  test <d>, <s>```
     - řídící operace - ```asm clc ; clear carry```, ```asm stc ; set carry``` - obdobně pro všechny příznak. bity
     - řetězcové operace - ```asm movs, cmps, lods, stos```
   - skokové instrukce: (viz minulá otázka bruv)
