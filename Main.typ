@@ -381,7 +381,7 @@
   - SDA _(Serial Data Line)_ - pro přenos dat mezi zařizeními, data jsou zasílana sériově po bitech
   - SCL _(Serial Clock Line)_ - pro synchronizaci přenosu 
 - funguje ve formě přenosu dat mezi _"Master"_ a _"Slave"_ zařizeními
-  - *_Master_* - zodpovědný za řízení komunikace, inicijuje přenos
+  - *_Master_* - zodpovědný za řízení komunikace, inicializuje přenos
   - *_Slave_* - řízení od _"Master"_ přijímá a vykoná (vykoná funkci / poskytuje data)
 - princip fungování:
   - v klidovém stavu obě na log. 1
@@ -457,7 +457,7 @@
   - měněním směru el. proudu v cívce se mění směr magnet. toku jádrem i štěrbinou a tím smysl magnetizace aktivní vrstvy
 == Čtení z disku
   - při čtení se disk pohybuje stejným směrem konstantní rychlostí
-  - na aktivní feromagnetické vrstvě jsou místa magnetizované tím či oním směrem - mezi nimi jsou místa magnetického přechodu - tzv. _"magnetiké rezervace"_
+  - na aktivní feromagnetické vrstvě jsou místa magnetizované tím či oním směrem - mezi nimi jsou místa magnetického přechodu - tzv. _"magnetické rezervace"_
     - právě ony představují zapsanou informaci
     - změny mag. polí na feromag. vrstvě způsobují napěťové impulsy na svorkách cívky čtecí hlavy
   - impulsy jsou následovně zesíleny elektrickými zesilovači
@@ -730,8 +730,8 @@
 == AMOLED vs. PMOLED _(Active / Pasive Matrix OLED)_
 - stejný princip jako aktivní / pasivní LCD
 - body organizovány do pravoúhlé matice
-  - pasivní - každá OLED je aktitována dvěma na sebe kolmými elektrodami, procházejícími celou šířkou a výškou displeje
-  - aktivní - každá OLED aktitována vlastním tranzistorem _(TFT - Thin Film Transistor)_
+  - pasivní - každá OLED je aktivována dvěma na sebe kolmými elektrodami, procházejícími celou šířkou a výškou displeje
+  - aktivní - každá OLED aktivována vlastním tranzistorem _(TFT - Thin Film Transistor)_
 
 #figure(
   caption: [Technologie _OLED_ - pasivní _(PMOLED)_ a aktivní _(AMOLED)_],
@@ -1124,7 +1124,7 @@
   - nabitý = log. 1
   - vybitý = log. 0
 - jedna "_buňka_" dynamické paměti je sestavena z kondenzátoru $C$ a tranzistoru $T$ (jako el. _switch_)
-- kapacita $C$ je velmi malá (jednotky femtoFahrad) - časem ztrácí napětí (proud teče do/ven z $C$)
+- kapacita $C$ je velmi malá (jednotky femtoFarad) - časem ztrácí napětí (proud teče do/ven z $C$)
 - nutný častý _refresh_ (občerstvení), aby si uchovala svou informaci (každých \~10 ms)
   - provede se pro celý řádek při každém čtení buňky z tohoto řádku
 
@@ -1221,7 +1221,7 @@
   + počítač se programuje obsahem paměti
   + strojové instrukce a data jsou uloženy v téže paměti - stejný přístup do paměti 
     - rozdílné je to u harvardské koncepce - samostatná paměť pro program _(instrukce)_ a data
-  + paměť je rozdělena do buňěk stejné velikosti - jejich pořadová čísla jako adresy
+  + paměť je rozdělena do buněk stejné velikosti - jejich pořadová čísla jako adresy
   + následujicí krok je závislý na tom předchozím
   + program je sekvence instrukcí, které se sekvenčně vykonají
   + změna pořadí provádění instrukcí se provádí za pomocí skoků ((ne)podmíněný)
@@ -1261,7 +1261,7 @@
 - vstup/výstup _(Input/Output)_ - pro externí zařízení
 - sběrnice - sdružené datové a řídicí signály, propojuje _CPU_, paměť a _I/O_ 
 - #underline[výhody]:
-  - rozdělení paměťi pro program a data si rozhodne sám programátor
+  - rozdělení paměti pro program a data si rozhodne sám programátor
   - řídicí jednotka přistupuje do paměti pro data i instrukce jednotným způsobem
   - jedná sběrnice znamená jednodušší design a výrobu
 - #underline[nevýhody:]
@@ -1288,7 +1288,7 @@
     - dvě sběrnice zvyšují propustnost - souběžné přistupování pro data i instrukce
 - #underline[nevýhody:]
   - dvě sběrnice - vyšší nároky při vývoji řídicí jednotky + zvyšuje náklady pro výrobce
-  - nevyužitelná část paměti nelze využít - program nemůže být v paměti pro data a naopak 
+  - nevyužitá část paměti nelze využít - program nemůže být v paměti pro data a naopak 
 
 //////////////////////////////////////////////////////////////////////////////////////////*
 //////////////////////////////////////////////////////////////////////////////////////////*
@@ -1324,7 +1324,7 @@
 #figure(image("komunikace/image1.png", width: 60%), caption: [Technika nepodméněného vstupu a výstupu _bufferu_])
 - #underline[vstup] _(input)_ - procesor vyšle signál _RD_ (read) 
   - přikáže tím vstupnímu zařízení předat data do procesoru
-  - nijak se nekotroluje jestli je periférie připravená (očekává se, že je vždy připravená)
+  - nijak se nekontroluje jestli je periférie připravená (očekává se, že je vždy připravená)
 - #underline[výstup] _(output)_ - procesor vyšle signál _WR_ (write) 
   - výstupní zařízení data z procesoru převezme
   - nijak se nekontroluje, jestli data periferní zařízení opravdu převzalo
@@ -1379,7 +1379,7 @@
     caption: [Technika korespondenčně obousměrná s _bufferem_],
 )
 
-= 29. Popiš DMA blok a nakresli schéma DMA řadič v architekuře dle von~Neumanna.
+= 29. Popiš DMA blok a nakresli schéma DMA řadič v architektuře dle von~Neumanna.
 
 - DMA _(Direct Memory Access)_ blok / kontrolér / řadič 
   - umožňuje perifením zařízením vstupovat do hlavní paměti přímo
@@ -1475,7 +1475,7 @@
                               ; jeho adresa je na stacku
 
   ; další jsou už podmíněné
-  ; tyto testují regitr rcx a jsou využivány pro cykly
+  ; tyto testují registr rcx a jsou využivány pro cykly
     loop <target>             ; if(--ecx) goto <target>
     loope <target>            ; if(--ecx && zf) goto <target>
     loopz <target>            ; stejné jako loope
@@ -1524,8 +1524,8 @@
   - příznakové bity v 8-bit ```asm flags``` registru:
     - ZF _(zero flag)_ - nastaví se pokud výsledek operace je nula
     - SF _(sign flag)_ - nastaví se pokud výsledek operace je záporné číslo
-    - OF _(overflow flag)_ - nastaví pokud dojde ke znamékovému přetečení _(signed overflow)_
-    - CF _(carry flag)_ - nastaví se pokud dojde k neznámekovému přetečení _(unsigned overflow)_
+    - OF _(overflow flag)_ - nastaví pokud dojde ke znaménkovému přetečení _(signed overflow)_
+    - CF _(carry flag)_ - nastaví se pokud dojde k neznámenkovému přetečení _(unsigned overflow)_
     - PF _(parity flag)_ - nastaví se pokud výsledek má sudý počet jedniček (např. `0110 1001`)
     - AF _(auxiliary carry flag)_ - nastaví se pokud dojde ke `carry out` ve spodním `nibble`
     - DF _(direction flag)_ - řídí směr `string` operací
@@ -1541,7 +1541,7 @@
 - na datových typech záleží v Assembly při všem - programátor je zodpovědný za vše a to i za správné určení datových typů
   - Assembly neřeší co nějaká sekvence bitů v paměti znaměná/reprezentuje - ```c int, float, long, struct {int, float}, char```
   - je mu to jedno - jsou to jenom bity v paměti bez žádného významu
-  - programátor jím dává význam - sami o sobě jen jsou jen "jedničky" a "nuly"
+  - programátor jím dává význam - sami o sobě jsou jen "jedničky" a "nuly"
 - syntakticky hledí Assembly na datové typy zadané programátorem u instrukcí s $d$ a $s$ parametry: 
   ```asm INTRUCTION_NAME <d>, <s>     ; d = destination, s = source``` 
   - myšleno jako `destination` a `source` parametry - jsou jimi např.:
@@ -1671,7 +1671,7 @@
       - velikost (dimenze) mřížky - jejím datovým typ je ```c dim3```
       - velikost (dimenze) bloků v mřížce - jejím datovým typ je také ```c dim3```
       - mřížka je od toho aby se _GPU_-čku při spuštění _kernelu_ nařídilo, jaký májí data _"tvar"_
-        - _RGBA_ obrázek o velikosti `1200x800` nakonfigurujeme do mřížky `1200x800x4`, kde čísla jsou odpovídají počtům vláken na danou dimenzi
+        - _RGBA_ obrázek o velikosti `1200x800` nakonfigurujeme do mřížky `1200x800x4`, kde čísla odpovídají počtům vláken na danou dimenzi
           - při spuštění se ještě musí hledět na to, jak tyto vlákna přerozdělíme do bloků stejných rozměrů, tak aby se vešel každý pixel obrázku do finální mřížky 
         - mřížka může dále představovat tvar tenzorů, matic, vektorů apod.
   - modifikátory funkcí - píšeme před signatúrou funkcí:
@@ -1913,7 +1913,7 @@
   - navýšením výpočetní síly, by měl (v ideálním světě) růst výkon o stejný faktor   
   - objevují se zde však ztráty výkonu:
     - při komunikaci - pomalé sběrnice, nutná koordinace (jeden po druhém) apod.
-    - kvůli nerovnoměrné či neoptimální vytížení procesorů - některé procesory pracují naplno, jiné jen se jen částečné zapojí do zpracování úlohy
+    - kvůli nerovnoměrné či neoptimální vytížení procesorů - některé procesory pracují naplno, jiné se jen částečné zapojí do zpracování úlohy
     - kvůli neznalosti vhodných algoritmů - vyberem neoptimální řešení pro řešení problému
 - zrychlení jsou trojího typu:
 #set enum(numbering: "1.")
