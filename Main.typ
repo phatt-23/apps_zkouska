@@ -131,7 +131,7 @@
   - pracovní registry - obvykle jeden, dva 
     - ukládají aktuálně vypracovaná data
     - jsou nějčastějšími operandy strojových instrukcí
-  - _"sctratch-pad"_ registry:
+  - _"scratch-pad"_ registry:
     - pro ukládání nejčastěji používaných dat
     - část strojových instrukcí pracuje přímo s těmito registry
   - paměť dat _RWM:_
@@ -357,7 +357,7 @@
     - základem je odporová síť, na níž se vytvářejí částečné výstupní proudy:
       - váhově řazené hodnoty - rezistory s odpory v poměrech 1 : 2 : 4 : ... : 64 : 128
       - R-2R - stačí rezistory s odpory R a 2R
-  - digitalní hodnota přepína přepínače pod 2R rezisotory
+  - digitalní hodnota přepína přepínače pod 2R rezistory
   - výstupem je el. proud $I_A$ a jeho komplementární (znegovaný) proud $I_B$
 
 #figure(
@@ -603,7 +603,7 @@
 - používá tekuté krystaly k zobrazení jednotlivých pixelů
 - v základě jsou dvojího typu: 
   - TN-TFT - _Twisted-Nematic Thin-Film-Transistor_
-  - IPS - _In-Place-Switching_
+  - IPS - _In-Plane-Switching_
 
 == Princip TN-TFT LCD _(Twisted-Nematic Thin-Film-Transistor LCD)_
   1. světlo projde polarizačním filtrem a polarizuje se
@@ -939,7 +939,7 @@
 = 18. Popiš a nakresli schéma RISC procesoru, se kterým ses seznámil.
 == ARM Cortex A77
 - frekvence 3 GHz
-- ARM v8-A architektura (harvardká arch.)
+- ARM v8-A architektura (harvardská arch.)
 - 64-bitová instrukční sada se SIMD rozšířením
 - 13-ti úrovňové zřetězení
 - 8 jader
@@ -1232,7 +1232,7 @@
 = 24 Jak funguje počítač a jak se vykonávají skokové instrukce.
 - počítač je programován obsahem paměti 
 - instrukce se vykonávají sekvenčně
-- každy krok závisí a tom předchozím
+- každy krok závisí na tom předchozím
 - procesor _(CPU)_ je sekvenční obvod - vstupem jsou strojové instrukce z paměti
   - má svou vlastní rychlou paměť pro ukládání výsledku instrukcí - _registry_
   - instrukční ukazatel _(IP - Instruction Pointer)_ - někdy jako _PC_ _(Program Counter)_
